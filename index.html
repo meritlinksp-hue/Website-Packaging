@@ -10,7 +10,31 @@
 <body>
     <div id="root"></div>
 
+    <!-- จำลอง State Context สำหรับ Remix / React Router SPA Runtime -->
+    <script>
+        window.__remixContext = {
+            url: window.location.pathname,
+            state: {
+                loaderData: {},
+                actionData: null,
+                errors: null
+            },
+            future: {
+                v3_fetcherPersist: true,
+                v3_relativeSplatPath: true,
+                v3_throwAbortReason: true,
+                v3_singleFetch: false,
+                v3_lazyRouteDiscovery: false
+            },
+            isSpaMode: true
+        };
+        window.__staticRouterHydrationData = {
+            loaderData: {},
+            actionData: null,
+            errors: null
+        };
+    </script>
+
     <script type="module" src="./assets/index-hcOR4-hu.js"></script>
-    <script type="module" src="./assets/index-d1yt7rzq.js"></script>
 </body>
 </html>
