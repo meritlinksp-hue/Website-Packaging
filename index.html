@@ -4,19 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nirin Packaging</title>
-    <!-- ลิงก์ไฟล์ CSS จากโฟลเดอร์ assets -->
+    <!-- ลิงก์ไฟล์ CSS -->
     <link rel="stylesheet" href="./assets/index-dowarvtz.css">
 </head>
 <body>
     <div id="root"></div>
 
-    <script type="module">
-        import { component as App } from './assets/index-d1yt7rzq.js';
-        import { j as jsx } from './assets/index-hcor4-hu.js';
-        import ReactDOM from 'https://esm.sh/react-dom@19/client';
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(jsx.jsx(App, {}));
-    </script>
+    <!-- เรียกไฟล์ JavaScript หลักที่ Build มาให้รันอัตโนมัติ -->
+    <script type="module" crossorigin src="./assets/index-d1yt7rzq.js"></script>
 </body>
 </html>
