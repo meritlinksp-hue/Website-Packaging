@@ -1,0 +1,27 @@
+import { showcaseItems } from '../data/products';
+
+export default function ShowcaseSection() {
+  return (
+    <div className="showcase-stack">
+      {showcaseItems.map((item, index) => (
+        <section
+          key={item.id}
+          className="showcase-section"
+          id={item.id}
+          aria-label={item.alt}
+        >
+          <figure className="poster-frame">
+            <img
+              src={item.image}
+              alt={item.alt}
+              width="1980"
+              height="1200"
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchPriority={index === 0 ? 'high' : 'auto'}
+            />
+          </figure>
+        </section>
+      ))}
+    </div>
+  );
+}
