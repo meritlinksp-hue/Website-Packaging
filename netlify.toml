@@ -1,0 +1,9 @@
+# Netlify build config
+# Base = dev/ (the real Vite + React app source), publish = dev/dist build output.
+# The repo-root index.html + assets/ are stale pre-built artifacts of an old
+# TanStack Start bundle that required SSR hydration payload (window.$_TSR) and
+# threw "Invariant failed" on load. We build & publish the dev app instead.
+[build]
+  base = "dev"
+  command = "npm run build"
+  publish = "dist"
