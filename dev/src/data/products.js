@@ -2,6 +2,8 @@ export const showcaseItems = [
   {
     id: 'about-us',
     image: '/images/we-are-nirin.png',
+    // Mobile-only hero variant (แสดงเฉพาะจอ ≤760px ผ่าน <picture><source>)
+    mobileImage: '/images/we-are-nirin-mobile.png',
     alt: 'We are Nirin Packaging ผู้ผลิตบรรจุภัณฑ์เครื่องสำอางแบบ OEM ครบวงจร',
   },
   {

@@ -249,6 +249,16 @@ body {
   display: block;
 }
 
+/* === Mobile-only hero (poster แรกสุดของหน้าแรก) ===
+ * ภาพมือถือเป็นทรงเกือบจัตุรัส (1079×1028) — ปรับสัดส่วนกรอบเฉพาะจอ ≤760px
+ * เพื่อให้ภาพเต็มกรอบพอดีด้วย object-fit: contain เดิม (ไม่ crop ไม่มีขอบขาว)
+ * Desktop (≥761px) คงกรอบ 33/20 และภาพเดสก์ท็อปเดิมทุกอย่าง */
+@media (max-width: 760px) {
+  .poster-frame--mobile-hero {
+    aspect-ratio: 1079 / 1028;
+  }
+}
+
 /* === Product Catalog === */
 .catalog-section {
   display: flex;
