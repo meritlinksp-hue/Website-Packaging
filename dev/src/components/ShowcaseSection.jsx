@@ -4,7 +4,7 @@ import { showcaseItems } from '../data/products';
 // แล้วลบไฟล์ dev/src/preview/MobileHeroCta.jsx + mobile-hero-cta.css
 import MobileHeroCta from '../preview/MobileHeroCta';
 
-export default function ShowcaseSection() {
+export default function ShowcaseSection({ onNavigate }) {
   return (
     <div className="showcase-stack">
       {/* TEMPORARY: Mobile (≤760px) แสดงเฉพาะ Hero #1 — Hero #2/#3 ถูกซ่อนด้วย CSS
@@ -49,7 +49,7 @@ export default function ShowcaseSection() {
                 Hotspot ลิงก์โปร่งใสทับปุ่ม "EXPLORE OUR PACKAGING" ในภาพ
                 → นำทาง #/product-catalog (route เดิม) · Desktop: render null
                 Rollback: ลบ block นี้ + import ด้านบน */}
-            {index === 0 && <MobileHeroCta />}
+            {index === 0 && <MobileHeroCta onNavigate={onNavigate} />}
           </figure>
         </section>
       ))}

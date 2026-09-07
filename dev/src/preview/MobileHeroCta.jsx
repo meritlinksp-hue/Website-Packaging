@@ -2,25 +2,38 @@ import { useEffect, useState } from 'react';
 import './mobile-hero-cta.css';
 
 /* =============================================================
- * TEMPORARY PREMIUM MOBILE HERO CTA — "Explore our packaging"
+ * TEMPORARY MOBILE HERO CTA — "Explore our packaging" PULSE
  * =============================================================
- * ปุ่ม CTA ถูกฝังอยู่ในรูป hero (we-are-nirin-mobile.png) — คอมโพเนนต์นี้
- * วางลิงก์ hotspot โปร่งใสทับบริเวณปุ่ม (ไม่แก้รูป) แล้วนำทางไป
- * Product Catalog เดิม (#/product-catalog) ผ่าน hash router ของแอป
+ * The CTA button artwork is EMBEDDED in the hero image
+ * (hero-mobile/New Hero.png: button at x[42-456] y[803-905],
+ *  measured from pixels — magenta→purple gradient, rounded ends).
  *
- * • Mobile only (≤760px): desktop render null → ไม่มี DOM/ไม่โหลดอะไร
- * • One-shot interaction: กด → บีบตัว + ไฮไลต์ + shimmer 1 ครั้ง → สปริงกลับ
- *   ไม่มี loop / ไม่มี rAF / ไม่มี setInterval (CSS transitions เท่านั้น)
- * • เคารพ prefers-reduced-motion
+ * Approach — the ORIGINAL ARTWORK ITSELF scales (no overlay, no
+ * glow, no shimmer, no redrawn button):
  *
- * ROLLBACK: ลบไฟล์นี้ + mobile-hero-cta.css + บล็อกที่คอมเมนต์
- * "TEMPORARY PREMIUM MOBILE HERO CTA" ใน ShowcaseSection.jsx
+ *   .mhcta     = semantic <a> hotspot (clickable → catalog),
+ *                positioned proportionally over the pill.
+ *   .mhcta-art = a CSS "cutout": the SAME hero image rendered as a
+ *                background with background-size/background-position
+ *                tuned so it reproduces EXACTLY the pill's own
+ *                pixels, clipped to the pill's rounded shape. At
+ *                scale(1) it is pixel-identical to the artwork
+ *                beneath (invisible seam). The infinite keyframes
+ *                scale it 1 → 1.10 → 1 around its center → the
+ *                ORIGINAL artwork visibly grows, then returns.
+ *                Pure transform — no opacity/glow/shimmer animation.
+ *
+ *  • Mobile only (≤760px): desktop renders null → no DOM at all.
+ *  • prefers-reduced-motion: static original artwork, still clickable.
+ *
+ * ROLLBACK: delete this file + mobile-hero-cta.css + the commented
+ * "TEMPORARY ... MOBILE HERO CTA" block in ShowcaseSection.jsx
  * ============================================================ */
 
-const CATALOG_ROUTE = '#/product-catalog'; // route เดิมของเว็บ (navItems/App.jsx)
+const CATALOG_ROUTE = '#/product-catalog'; // existing route (navItems/App.jsx)
 
-export default function MobileHeroCta() {
-  // Desktop (≥761px) → null ตั้งแต่ render แรก: hero เดสก์ท็อปเหมือนเดิม 100%
+export default function MobileHeroCta({ onNavigate }) {
+  // Desktop (≥761px) → null at first render: hero stays 100% unchanged.
   const [isMobile, setIsMobile] = useState(
     () => window.matchMedia('(max-width: 760px)').matches
   );
@@ -34,14 +47,25 @@ export default function MobileHeroCta() {
 
   if (!isMobile) return null;
 
+  // Use the app's existing router navigate('catalog') → sets the
+  // #/product-catalog hash AND scrollTo top. A plain <a href> only
+  // updates the hash without resetting scroll, so the catalog page
+  // could land scrolled mid-page (appears "not to navigate").
+  const handleClick = (e) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate('catalog');
+    }
+  };
+
   return (
     <a
       className="mhcta"
       href={CATALOG_ROUTE}
       aria-label="Explore our packaging"
+      onClick={handleClick}
     >
-      <span className="mhcta-glow" aria-hidden="true" />
-      <span className="mhcta-shimmer" aria-hidden="true" />
+      <span className="mhcta-art" aria-hidden="true" />
     </a>
   );
 }

@@ -1,10 +1,15 @@
 /* =============================================================
- * TEMPORARY PACKAGING ANIMATION TEST — MOBILE ONLY
- * Isolated styles สำหรับทดสอบ header animation (localhost เท่านั้น)
+ * TEMPORARY PACKAGING + BRAND MESSAGE — ONE CONTINUOUS STREAM (MOBILE ONLY)
  * - ทุก class ขึ้นต้น ph- ไม่กระทบ CSS เว็บจริงแม้แต่บรรทัดเดียว
  * - Desktop (≥761px): display:none + component render null → ไม่มีอะไรเกิดขึ้น
+ * - รางเดียว (ph-track) บรรจุ ขวด 5 × 2 สำเนา + ข้อความ → เลื่อนซ้าย
+ *   translateX 0 → -50% linear infinite (0% ≡ 100% เนื้อหาซ้ำเป๊ะ = เนียน)
+ *   PHASE 1 ขวดเข้าทีละชิ้น (ph-item-enter one-shot) → จากนั้นไหลต่อเนื่อง
+ *   ความเร็วคงที่ทั้งราง — ขวดและข้อความขยับพร้อมกัน ไม่มี overlap
+ * - ข้อความ: ตัวอักษรล้วนบรรทัดเดียว (nowrap) — ไม่มีกล่อง/พื้นหลัง/เส้นขอบ
+ * - ไม่มี rAF / setInterval · เคารพ prefers-reduced-motion
  * ROLLBACK: ลบไฟล์นี้ + MobileHeaderPackaging.jsx + 2 จุดที่คอมเมนต์
- * "TEMPORARY PACKAGING ANIMATION TEST" ใน Header.jsx
+ * "TEMPORARY PACKAGING ANIMATION TEST" ใน Header.jsx (คืน one-shot จาก git)
  * ============================================================ */
 
 .ph-center {
@@ -13,24 +18,55 @@
   min-width: 0;
   height: 3.55rem;
   align-self: center;
-  overflow: hidden;          /* ไม่ล้นแนวนอน ไม่ทับ logo/hamburger */
+  overflow: hidden;          /* มาสก์เดียวของสตรีม — ไม่มีอะไรล้นเข้า logo/hamburger */
   position: relative;
+  --ph-loop: 19s;            /* 1 รอบ: เข้า ~2.75s + ไหล ~16.25s (ความเร็วคงที่ ~39px/s) */
+  --ph-start: 400ms;
+  /* ขยายโซนเข้าช่องไฟว่างของ header (logo/hamburger ไม่ขยับ) */
+  margin-inline: -0.55rem;
+  /* จอแคบ (≤400px): ย่อขวดเล็กน้อย + ช่องไฟแคบลง — ขวด 5 ชิ้นลอยในโซนพอดี */
+  --ph-zoom: 1;
+  --ph-gap: 14px;
 }
 
-.ph-strip {
+@media (max-width: 400px) {
+  .ph-center {
+    --ph-zoom: 0.9;
+    --ph-gap: 8px;
+  }
+}
+
+/* ===== รางเดียว: ขวด + ข้อความ เดินทางพร้อมกันด้วยความเร็วคงที่ (linear) ===== */
+.ph-track {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: max-content;        /* กว้างตามเนื้อหา (เกินโซน = ถูก ph-center clip) */
+  display: flex;
+  align-items: flex-end;
+  animation: ph-stream var(--ph-loop) linear infinite;
+  will-change: transform;
+}
+
+/* สำเนา A/B เนื้อหาเหมือนกันเป๊ะ → จุดต่อ 0%/100% มองไม่เห็น */
+.ph-seg {
+  display: flex;
+  align-items: flex-end;
+  flex: none;
 }
 
 .ph-item {
-  /* ตำแหน่งซ้าย (left) ถูกกำหนดจาก JS — ศูนย์กลาง "วัตถุจริง" เว้นระยะเท่ากัน */
-  position: absolute;
-  bottom: 3px;
-  will-change: transform, opacity;
-  /* สถานะเริ่มต้นก่อน JS เขียนทับ (กัน flash) */
-  opacity: 0;
-  transform: translateY(var(--ph-y0, 48px)) rotate(var(--ph-r0, 0deg)) scale(0.55);
+  flex: none;
+  margin-bottom: 3px;
   transform-origin: 50% 100%;
+  opacity: 0;                 /* ค่าเริ่ม — fill:both ของ animation เขียนทับทันที */
+  animation: ph-item-enter 1.15s cubic-bezier(0.16, 0.84, 0.3, 1) both;
+  will-change: transform, opacity;
+}
+
+.ph-item + .ph-item {
+  margin-left: var(--ph-gap); /* ช่องไฟเท่า ๆ กัน ชัดเจน ไม่แตะกัน */
 }
 
 .ph-item img {
@@ -39,6 +75,104 @@
   max-width: none;
   pointer-events: none;
   user-select: none;
+}
+
+/* ===== ข้อความแบรนด์ — ตัวอักษรล้วน บรรทัดเดียว ไม่มีกล่อง/พื้นหลัง/ขอบ =====
+ * สายอักษร: IBM Plex Sans Thai ของเว็บเดิม (โหลดน้ำหนัก 700 เพิ่มใน index.html
+ * — ไม่ใช่ font ใหม่) + system Thai sans ที่โมเดิร์นเป็น fallback
+ * ขนาด: ink สูง ~30–40px ≈ สมดุลกับความสูงโลโก้ที่มองเห็น (~56.8px กล่อง)
+ * เส้นบาง ๆ ของสระ/วรรณยุกต์ไทยไม่โดนขอบโซน (zone สูง 56.8px) */
+.ph-msg {
+  flex: none;
+  align-self: center;
+  margin-left: calc(var(--ph-gap) * 2);
+  margin-right: calc(var(--ph-gap) * 2.5);
+  white-space: nowrap;        /* ห้ามตัดบรรทัด — บรรทัดเดียวทุกความกว้าง */
+  font-family: "IBM Plex Sans Thai", "Leelawadee UI", "Sukhumvit Set", "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;           /* น้ำหนักจริง 700 (โหลดแล้ว) — bold พรีเมียม ไม่หนาเกิน */
+  font-size: clamp(1.75rem, 9.2vw, 2.4rem); /* 28 → 38.4px — ink ≈ 55–72% ของโลโก้ */
+  line-height: 1.1;
+  letter-spacing: 0;          /* ไทยไม่ต้อง tracking — กันสระ/วรรณยุกต์ชนกัน */
+}
+
+/* สีตาม CI เดิม: ไล่ชมพู → ม่วง (#ef5688 → #6738a2) เหมือน gradient อื่นของเว็บ */
+.ph-msg-text {
+  background: linear-gradient(100deg, #ef5688 10%, #6738a2 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== prefers-reduced-motion: ข้อความนิ่งกลางโซน (แสดงแทนลูป — ไม่มีกล่อง) ===== */
+.ph-msg-static {
+  display: none;
+}
+
+/* =============================================================
+ * KEYFRAMES — PHASE 1 (one-shot entrance) + PHASE 2–4 (stream/loop)
+ * stream: translateX 0 → -50% linear = ความเร็วคงที่ (เนื้อหา 2 สำเนา
+ * เหมือนเป๊ะ → จุด 100% ≡ 0% มองไม่เห็นรอยต่อ)
+ * ============================================================= */
+
+/* ===== PHASE 1: เข้าทีละชิ้น (one-shot — เล่นครั้งเดียวตอนโหลด fill:both)
+   สปริงฟีลเดิม: เร่ง→ลด→overshoot ~9%→bounce→ตั้ง · ท่าเริ่มจาก --ph-y0/--ph-r0
+   stagger จาก animation-delay รายชิ้น (START_DELAY + i×300ms จาก JSX) ===== */
+@keyframes ph-item-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--ph-y0)) rotate(var(--ph-r0)) scale(0.55);
+    animation-timing-function: cubic-bezier(0.16, 0.84, 0.3, 1); /* ไต่ขึ้นเร็ว ลงตัวนุ่ม */
+  }
+  52.2% {  /* ~600ms — ถึงตำแหน่ง */
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+    animation-timing-function: ease-out;
+  }
+  72.2% {  /* ~830ms — overshoot เบา ๆ (~4–5px) */
+    transform: translateY(calc(var(--ph-y0) * -0.09)) rotate(calc(var(--ph-r0) * 0.25)) scale(1.03);
+    animation-timing-function: ease-in-out;
+  }
+  83.5% {  /* ~960ms — bounce เล็กมาก */
+    transform: translateY(calc(var(--ph-y0) * 0.035)) scale(0.995);
+    animation-timing-function: ease-out;
+  }
+  100% {   /* ~1150ms — ตั้งนิ่ง แล้วไหลไปกับราง */
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+/* ===== PHASE 2–4 + LOOP: รางเดินทาง 0 → -50% (หนึ่งเซกเมนต์พอดี) ด้วย LINEAR
+   = ความเร็วคงที่ตลอด — ขวดและข้อความขยับพร้อมกันเป๊ะ ไม่มี speed mismatch
+   ช่วง 0→14.5% รางนิ่ง (รอ entrance ceremony จบครบทุกชิ้น) แล้วไหลต่อเนื่อง
+   จบรอบที่ -50% = สำเนา B อยู่ตรงตำแหน่งเริ่มต้นของ A พอดี → วนซ้ำเนียน ๆ ===== */
+@keyframes ph-stream {
+  0%, 14.5% {  /* รางนิ่งรอ entrance ceremony จบ (last item ตั้งที่ ~2.75s) */
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ===== prefers-reduced-motion: ไม่วนลูป — ข้อความนิ่งกลางโซน (ไม่มีกล่อง) ===== */
+@media (prefers-reduced-motion: reduce) {
+  .ph-track {
+    display: none !important;
+  }
+  .ph-item {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  .ph-msg-static {
+    display: flex !important;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
 }
 
 /* เดสก์ท็อป: ไม่แสดงอะไรเลย (double safety — component ก็ render null อยู่แล้ว) */

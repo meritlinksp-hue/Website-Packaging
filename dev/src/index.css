@@ -666,6 +666,43 @@ body {
 }
 
 @media (max-width: 760px) {
+  /* === MOBILE FIX — header initial visibility (localhost test) ===
+   * สาเหตุ: .floating-header ใช้ fixed + left:50% + transform:translate(-50%)
+   * และมี backdrop-filter + layers ที่ animate ถาวร (will-change: transform) อยู่ข้างใน
+   * → บน iOS Safari / Android WebView บางเครื่อง layer อาจถูก composite ผิดตำแหน่ง
+   *   เฟรมแรก (ดูเหมือนเลื่อนขึ้นเกินจอ ต้อง scroll ก่อนถึงกลับมา)
+   * วิธีแก้: จัดกลางด้วย layout (left/right:0 + margin auto) แทน transform
+   *   → ตำแหน่ง/ความกว้างเท่าเดิมทุก px (width: min(74rem, 100% - 2rem) คงเดิม)
+   *   + top เผื่อ safe-area (notch/Dynamic Island/standalone — โหมดปกติ = 0 ไม่ขยับ)
+   * Desktop (≥761px) ยังใช้ left:50% + translate(-50%) เหมือนเดิม 100%
+   * ROLLBACK: ลบบล็อก "MOBILE FIX" ทั้ง 2 บล็อกในนี้ */
+  .floating-header {
+    left: 0;
+    right: 0;
+    transform: none;
+    margin-inline: auto;
+    top: calc(1rem + env(safe-area-inset-top, 0px));
+  }
+
+  /* === MOBILE FIX — เต็มความกว้าง viewport + HEADER ต้อง fixed จริง (localhost test) ===
+   * สาเหตุที่แท้จริงของ "header หายตอนเปิดหน้า ต้อง scroll ก่อนถึงเห็น":
+   * iOS Safari / Android WebView บางเครื่อง — เมื่อ html/body มี overflow-x: hidden/clip
+   * position: fixed จะพัง (กลายเป็นเลื่อนตามหน้า) → header ถูกทิ้งไว้เหนือ viewport
+   * ตอนหน้าโหลดไม่ได้อยู่บนสุด = มองไม่เห็น ต้อง scroll หา
+   * วิธีแก้: บนมือถือต้องเป็น overflow-x: visible (และตรวจแล้วว่าไม่มี element ใด
+   * ล้นแนวนอนใน source — ทุก section กว้าง % / สตรีม header ถูก clip ใน .ph-center แล้ว)
+   * max-width: 100% = กันเหนียวให้รากของเลย์เอาต์กว้างเท่า viewport เสมอ
+   * ROLLBACK: ลบบล็อก "MOBILE FIX" ทั้ง 2 บล็อกในนี้ */
+  html,
+  body {
+    overflow-x: visible;
+    max-width: 100%;
+  }
+
+  #root {
+    max-width: 100%;
+  }
+
   .nav-toggle {
     display: flex;
     /* TEMPORARY PREMIUM MOBILE MENU ANIMATION (localhost test)

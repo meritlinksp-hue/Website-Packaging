@@ -145,7 +145,7 @@ function App() {
         ) : page === 'contact' ? (
           <ContactPage />
         ) : (
-          <ShowcaseSection />
+        <ShowcaseSection onNavigate={navigate} />
         )}
         <Footer activePage={page} />
       </main>
