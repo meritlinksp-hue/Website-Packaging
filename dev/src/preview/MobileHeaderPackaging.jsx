@@ -20,20 +20,23 @@ import { useEffect, useRef, useState } from 'react';
 import './mobile-header-packaging.css';
 
 const ASSETS = [
-  '/images/packaging/preview/1.png',
-  '/images/packaging/preview/2.png',
-  '/images/packaging/preview/3.png',
-  '/images/packaging/preview/4.png',
-  '/images/packaging/preview/5.png',
+  '/images/packaging/preview/bottle-new01-preview.png',
+  '/images/packaging/preview/bottle-new02-preview.png',
+  '/images/packaging/preview/bottle-new03-preview.png',
+  '/images/packaging/preview/bottle-new04-preview.png',
+  '/images/packaging/preview/bottle-new05-preview.png',
 ];
 
-// ขนาดไฟล์จริง (px) ของ packaging/preview/1–5.png
+// ขนาดไฟล์จริง (px) ของ packaging/preview/bottle-new01–05-preview.png
+// (ชุดใหม่ — normalize จาก packaging/originals/bottle-new01–05.png ด้วยวิธีเดิม:
+//  trim alpha bbox → scale เดียวกันทั้งชุด (365/873) → padding โปร่งใส 12px รอบด้าน
+//  ชุดเก่า preview/1–5.png ยังอยู่ครบ ไม่ถูกลบ/แก้ — ใช้ rollback ได้ทันที)
 const NATURAL = [
-  [148, 347],
-  [147, 365],
-  [216, 198],
-  [113, 385],
-  [138, 392],
+  [158, 356],
+  [186, 375],
+  [150, 386],
+  [160, 389],
+  [298, 252],
 ];
 
 // สเปริงต่อชิ้น — ζ 0.58–0.62 = overshoot เล็กมาก (~8–9% ≈ 4–5px)
@@ -51,8 +54,8 @@ const SIDE_MARGIN = 8; // px ระยะปลอดภัยจากขอบ
 const MIN_GAP = 3;     // px ช่องว่างแนวขอบวัตถุขั้นต่ำ (ห้ามชนกัน)
 
 // สัดส่วนความกว้าง "วัตถุจริง" ต่อ canvas ของแต่ละไฟล์
-// (วัดจาก alpha bbox จริง เทียบขนาดไฟล์ packaging/preview/1-5.png)
-const VIS_FRAC = [0.808, 0.818, 0.896, 0.811, 0.820];
+// (วัดจาก alpha bbox จริง เทียบขนาดไฟล์ packaging/preview/bottle-new01–05-preview.png)
+const VIS_FRAC = [0.848, 0.871, 0.84, 0.85, 0.919];
 const MAX_DISPLAY_H = 48; // px — พอดีใน header ไม่เพิ่มความสูง header
 
 function clamp(v, a, b) {

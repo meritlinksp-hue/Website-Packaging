@@ -645,6 +645,11 @@ body {
   .footer-mobile-images {
     display: none;
   }
+
+  /* TEMPORARY MOBILE FOOTER LINE CTA HOTSPOT — double safety (กันเหนียวเช่นกัน) */
+  .fmcta {
+    display: none;
+  }
 }
 
 @media (min-width: 761px) and (max-width: 1100px) {
@@ -663,11 +668,29 @@ body {
 @media (max-width: 760px) {
   .nav-toggle {
     display: flex;
+    /* TEMPORARY PREMIUM MOBILE MENU ANIMATION (localhost test)
+       ROLLBACK: ลบบล็อก "TEMPORARY PREMIUM MOBILE MENU ANIMATION" ทั้งหมดในไฟล์นี้ */
+    transition: background-color 0.18s, transform 0.15s ease;
+  }
+
+  /* กดปุ่ม → ตอบสนองสัมผัสทันที เบา ๆ (scale + จมลง 1px) */
+  .nav-toggle:active {
+    transform: scale(0.96) translateY(1px);
+    transition-duration: 0.08s;
   }
 
   /* เมนูมือถือ: ซ่อนแถวเมนู กด 3 ขีดแล้วเปิดเป็นแผงดรอปดาวน์ */
   .section-nav {
     display: none;
+    /* TEMPORARY PREMIUM MOBILE MENU ANIMATION — สถานะปิด = ซ่อนอยู่เหนือตำแหน่งสุดท้าย
+       display ใช้ allow-discrete → display:none ยังทำงานเหมือนเดิมทุกอย่าง
+       แต่ตอนเปิด/ปิด opacity+transform จะ tween ได้ (เบราว์เซอร์เก่า = เปิด/ปิดทันทีเหมือนเดิม) */
+    opacity: 0;
+    transform: translateY(-10px);
+    transition:
+      opacity 0.26s ease,
+      transform 0.26s ease,
+      display 0.26s allow-discrete;
   }
 
   .section-nav.open {
@@ -687,12 +710,61 @@ body {
     top: calc(100% + 0.7rem);
     left: 0;
     right: 0;
+    /* TEMPORARY PREMIUM MOBILE MENU ANIMATION — เลื่อนลง + เฟดเขา ช้ากว่าตอนปิดเล็กน้อย
+       (ease-out เกลี้ยว ไม่ bounce · transform/opacity เท่านั้น = GPU-friendly) */
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+      display 0.38s allow-discrete;
   }
 
   .section-nav.open a {
     justify-content: flex-start;
     padding: 0.8rem 0.9rem;
     font-size: 0.8rem;
+  }
+
+  /* TEMPORARY PREMIUM MOBILE MENU ANIMATION — จุดเริ่ม open transition:
+     panel เพิ่งถูกแสดงจาก display:none → ต้องมี @starting-style จึงจะ tween ได้
+     (เริ่มจากเลื่อนขึ้นเล็กน้อย + โปร่งใส → เลื่อนลงมาเกาะใต้ header) */
+  @starting-style {
+    .section-nav.open {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Overlay ม่านด้านหลัง: จางเข้าเร็ว ๆ ตอนเปิด (ปิด = หายทันทีตามพฤติกรรมเดิม) */
+  .nav-overlay {
+    opacity: 1;
+    transition:
+      opacity 0.18s ease,
+      display 0.18s allow-discrete;
+  }
+
+  @starting-style {
+    .nav-overlay {
+      opacity: 0;
+    }
+  }
+
+  /* prefers-reduced-motion: เมนูเปิด/ปิดทันที ไม่มีสไลด์/กดยุบ — ใช้งานเหมือนเดิมทุกอย่าง
+     (X icon ยังแสดงถูกต้อง — เพียงไม่มี tween) */
+  @media (prefers-reduced-motion: reduce) {
+    .section-nav,
+    .section-nav.open,
+    .nav-toggle,
+    .nav-toggle span,
+    .nav-overlay {
+      transition: none !important;
+    }
+    .section-nav,
+    .section-nav.open,
+    .nav-toggle:active {
+      transform: none !important;
+    }
   }
 
   /* Footer มือถือ: เรียงคอลัมน์เดียว ไม่ทับซ้อน */
@@ -735,6 +807,123 @@ body {
     display: block;
   }
 
+  /* === TEMPORARY MOBILE FOOTER LINE CTA HOTSPOT (localhost test) ===
+   * ปุ่ม "ปรึกษาผ่าน LINE" ฝังในภาพ 2.jpg (1078×281): ปุ่มจริง x[734-1037] y[158-222]
+   * hotspot ขยายจากปุ่มเข้าพื้นที่ว่างรอบ (วัดจากพิกเซลจริง: โซนรอบปุ่มว่าง 100%)
+   * → touch target ≥44px ที่ 375/390/430px (≈45.9 / 47.8 / 52.7px)
+   * ไม่ทับปุ่มชมพูด้านบน (จบ y=127) / ข้อความซ้าย (จบ x=569) / ขอบภาพขวา
+   * ตำแหน่งเป็น % ของ wrapper → ยึดติดภาพทุกความกว้าง · pattern เดียวกับ mhcta
+   * ROLLBACK: ลบบล็อกนี้ + <a class="fmcta"> ใน Footer.jsx + บล็อก ≥761px */
+  .footer-mobile-bottom {
+    position: relative;
+  }
+
+  .fmcta {
+    position: absolute;
+    left: 66.42%;                /* 716 / 1078 */
+    top: 48.4%;                  /* 136 / 281 */
+    width: 31.35%;               /* 338 / 1078 */
+    height: 46.98%;              /* 132 / 281 */
+    display: block;
+    border-radius: 999px;
+    z-index: 1;
+    -webkit-tap-highlight-color: transparent; /* ใช้ feedback ของเราแทน flash เริ่มต้น */
+    touch-action: manipulation;
+    outline: none;
+    /* ปล่อยนิ้ว → สปริงกลับ back-out easing เบา ๆ (เหมือน mhcta) */
+    transition: transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+  }
+
+  /* แผ่น glow/shimmer ทรง pill — วางตรงปุ่มฝังภาพพอดี
+   * ปุ่มเทียบ hotspot: left (734-716)/338=5.33% · top (158-136)/132=16.67%
+   *                  width 303/338=89.64% · height 64/132=48.48% */
+  .fmcta-glow,
+  .fmcta-shimmer {
+    position: absolute;
+    left: 5.33%;
+    top: 16.67%;
+    width: 89.64%;
+    height: 48.48%;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+
+  /* สถานะพัก: โปร่งใสสนิท — หน้าตา footer เหมือนเดิม 100% */
+  .fmcta-glow {
+    opacity: 0;
+    background:
+      linear-gradient(100deg, rgba(255, 255, 255, 0) 12%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 88%),
+      linear-gradient(90deg, rgba(103, 56, 162, 0.14), rgba(103, 56, 162, 0.14));
+    box-shadow: 0 0.35rem 0.9rem rgba(103, 56, 162, 0);
+    transition: opacity 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  /* Shimmer: เดินหน้า 1 ครั้ง/การกด — ไม่ loop */
+  .fmcta-shimmer {
+    overflow: hidden;
+  }
+  .fmcta-shimmer::before {
+    content: "";
+    position: absolute;
+    inset: -20% auto -20% 0;
+    width: 45%;
+    transform: translateX(-160%) skewX(-18deg);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.38) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    opacity: 0;
+  }
+
+  /* Hover — เฉพาะอุปกรณ์ที่มี hover จริง (จอเดสก์ท็อปแคบ) */
+  @media (hover: hover) {
+    .fmcta:hover {
+      transform: translateY(-1px);
+    }
+    .fmcta:hover .fmcta-glow {
+      opacity: 0.12;
+    }
+  }
+
+  /* กด (touch/active): บีบตัวเล็กน้อย + เงานุ่มสีม่วง CI + ไฮไลต์ + shimmer 1 ครั้ง */
+  .fmcta:active {
+    transform: scale(0.978) translateY(1px);
+    transition: transform 0.12s ease-out; /* กด: ตอบสนองไว */
+  }
+  .fmcta:active .fmcta-glow {
+    opacity: 0.24;
+    box-shadow: 0 0.35rem 0.9rem rgba(103, 56, 162, 0.3);
+  }
+  .fmcta:active .fmcta-shimmer::before {
+    animation: fmcta-sweep 0.55s ease-out 1 both; /* เล่นครั้งเดียวต่อการกด */
+  }
+
+  @keyframes fmcta-sweep {
+    from {
+      transform: translateX(-160%) skewX(-18deg);
+      opacity: 0;
+    }
+    35% {
+      opacity: 1;
+    }
+    to {
+      transform: translateX(320%) skewX(-18deg);
+      opacity: 0;
+    }
+  }
+
+  /* Keyboard focus — เห็นชัด นุ่มนวล ตามสี CI (#6738a2) */
+  .fmcta:focus-visible {
+    outline: 2px solid rgba(103, 56, 162, 0.85);
+    outline-offset: 3px;
+  }
+  .fmcta:focus-visible .fmcta-glow {
+    opacity: 0.18;
+  }
+
   /* === TEMPORARY MOBILE-ONLY HERO STACK (localhost test) ===
    * ≤760px: หน้า Home แสดงเฉพาะ Hero #1 — ซ่อน Hero #2/#3 (display:none
    * ไม่ทิ้ง layout: ไม่มีช่องว่าง/section ยุบ) · Desktop ≥761px แสดงครบ 3 hero เดิม
@@ -753,6 +942,26 @@ body {
   .catalog-card-frame {
     border-radius: 0.8rem;
     padding: 0.7rem;
+  }
+}
+
+/* ===== TEMPORARY MOBILE FOOTER LINE CTA — prefers-reduced-motion:
+ * ตัด motion ทั้งหมด (scale/shimmer/spring) — ลิงก์ยังกดได้/นำทางปกติ
+ * เหลือเพียง glow เฟดเร็วเป็น feedback แบบเงียบ ๆ */
+@media (prefers-reduced-motion: reduce) {
+  .fmcta,
+  .fmcta:active,
+  .fmcta:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+  .fmcta-shimmer,
+  .fmcta-shimmer::before {
+    display: none !important;
+    animation: none !important;
+  }
+  .fmcta-glow {
+    transition: opacity 0.01s linear !important;
   }
 }
 

@@ -7,24 +7,24 @@ import './animation-preview.css';
  * • ใช้เฉพาะหน้า preview — ไม่แตะ Header.jsx / Home / สไตล์จริง
  * • One-shot animation: เล่นครั้งเดียว จบแล้วหยุดสมบูรณ์ (ไม่ loop,
  *   ไม่ marquee, ไม่ setInterval — rAF ถูกยกเลิกเมื่อเล่นจบ)
- * • Assets: /images/packaging/preview/1..5.png (normalize แยกโฟลเดอร์)
+ * • Assets: /images/packaging/preview/bottle-new01..05-preview.png (normalize แยกโฟลเดอร์)
  * ============================================================ */
 
 const ASSETS = [
-  '/images/packaging/preview/1.png',
-  '/images/packaging/preview/2.png',
-  '/images/packaging/preview/3.png',
-  '/images/packaging/preview/4.png',
-  '/images/packaging/preview/5.png',
+  '/images/packaging/preview/bottle-new01-preview.png',
+  '/images/packaging/preview/bottle-new02-preview.png',
+  '/images/packaging/preview/bottle-new03-preview.png',
+  '/images/packaging/preview/bottle-new04-preview.png',
+  '/images/packaging/preview/bottle-new05-preview.png',
 ];
 
 // ขนาดไฟล์จริง (px) หลัง normalize — ใช้คำนวณ display size zoom เดียวกัน
 const NATURAL = [
-  [148, 347],
-  [147, 365],
-  [216, 198],
-  [113, 385],
-  [138, 392],
+  [158, 356],
+  [186, 375],
+  [150, 386],
+  [160, 389],
+  [298, 252],
 ];
 
 // สเปริงต่อชิ้น: ระยะตก/มุมเอียง/ความแข็ง/ค่าหน่วง ต่างกันเล็กน้อยให้เป็นธรรมชาติ
@@ -303,8 +303,9 @@ export default function AnimationPreview() {
       <p className="ap-note">
         One-shot spring animation — stagger 300ms · overshoot ~10–15% · tilt ±5–7° ·
         เล่นครั้งเดียวแล้วหยุดนิ่ง (ไม่ loop / ไม่ marquee) · เคารพ
-        prefers-reduced-motion · ภาพ: <code>packaging/preview/1–5.png</code>
-        (normalize จาก <code>packaging/originals/</code> โดยไม่แก้ไฟล์ต้นฉบับ)
+        prefers-reduced-motion · ภาพ: <code>packaging/preview/bottle-new01–05-preview.png</code>
+        (normalize จาก <code>packaging/originals/bottle-new01–05.png</code> โดยไม่แก้ไฟล์ต้นฉบับ —
+        ชุดเก่า <code>packaging/preview/1–5.png</code> ยังอยู่ครบ)
       </p>
     </div>
   );

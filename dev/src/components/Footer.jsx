@@ -44,14 +44,32 @@ export default function Footer({ activePage = 'home' }) {
             loading="lazy"
             decoding="async"
           />
-          <img
-            src="/images/footer-mobile/2.jpg"
-            alt="Let's create your packaging with Nirin Packaging — ขอใบเสนอราคา หรือปรึกษาผ่าน LINE"
-            width="1078"
-            height="281"
-            loading="lazy"
-            decoding="async"
-          />
+          <div className="footer-mobile-bottom">
+            <img
+              src="/images/footer-mobile/2.jpg"
+              alt="Let's create your packaging with Nirin Packaging — ขอใบเสนอราคา หรือปรึกษาผ่าน LINE"
+              width="1078"
+              height="281"
+              loading="lazy"
+              decoding="async"
+            />
+            {/* TEMPORARY MOBILE FOOTER LINE CTA HOTSPOT (localhost test)
+                ปุ่ม "ปรึกษาผ่าน LINE" ฝังอยู่ในภาพ (2.jpg: ปุ่ม x[734-1037] y[158-222]
+                จาก 1078×281) — hotspot ลิงก์โปร่งใสทับเฉพาะปุ่ม (ขยาย touch target
+                ≥44px จากพื้นที่ว่างรอบปุ่ม ไม่ทับปุ่มชมพู/ข้อความอื่น)
+                ROLLBACK: ลบ block นี้ + บล็อก "TEMPORARY MOBILE FOOTER LINE CTA
+                HOTSPOT" ใน index.css (2 จุด: @media ≤760px และ @media ≥761px) */}
+            <a
+              className="fmcta"
+              href="https://lin.ee/TiPFhI6"
+              aria-label="ปรึกษาผ่านไลน์"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span aria-hidden="true" className="fmcta-glow" />
+              <span aria-hidden="true" className="fmcta-shimmer" />
+            </a>
+          </div>
         </div>
       ) : (
         <>
