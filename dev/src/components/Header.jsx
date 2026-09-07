@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { navItems } from '../data/products';
+// TEMPORARY PACKAGING ANIMATION TEST — MOBILE ONLY (localhost experiment)
+// Rollback: ลบบรรทัด import นี้ + <PackagingHeaderAnimation /> ด้านล่าง
+// แล้วลบไฟล์ dev/src/preview/MobileHeaderPackaging.jsx + mobile-header-packaging.css
+import PackagingHeaderAnimation from '../preview/MobileHeaderPackaging';
 
 function ChevronIcon() {
   return (
@@ -150,6 +154,10 @@ export default function Header({ activePage = 'home', onNavigate }) {
             )
           )}
         </nav>
+        {/* TEMPORARY PACKAGING ANIMATION TEST — MOBILE ONLY (≤760px).
+            Desktop: component render null → header เหมือนเดิม 100%
+            Rollback: ลบ block นี้ + import ด้านบน */}
+        <PackagingHeaderAnimation />
         <button
           type="button"
           className={menuOpen ? 'nav-toggle open' : 'nav-toggle'}

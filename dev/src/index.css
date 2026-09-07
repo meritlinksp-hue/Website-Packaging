@@ -639,6 +639,12 @@ body {
   .nav-overlay {
     display: none;
   }
+
+  /* TEMPORARY MOBILE-ONLY IMAGE FOOTER — double safety
+   * (Footer.jsx ไม่ render แถบภาพบนเดสก์ท็อปอยู่แล้ว นี่คือกันเหนียว) */
+  .footer-mobile-images {
+    display: none;
+  }
 }
 
 @media (min-width: 761px) and (max-width: 1100px) {
@@ -707,6 +713,34 @@ body {
 
   .back-to-top {
     margin-top: 0.9rem;
+  }
+
+  /* === TEMPORARY MOBILE-ONLY IMAGE FOOTER (localhost test) ===
+   * ≤760px: Footer.jsx ไม่ render footer เดิมเลย → แสดงเฉพาะภาพ 2 แถบ (1.png → 2.jpg)
+   * ตัดพื้นหลัง gradient/padding/วงกลมตกแต่งของ .site-footer ออก
+   * เพื่อให้ภาพชิดขอบเต็มความกว้าง ไม่มีช่องว่างระหว่างแถบ
+   * ROLLBACK: ลบบล็อกนี้ + บล็อกใน @media ≥761px + คืน Footer.jsx เดิม */
+  .site-footer {
+    background: none;
+    padding: 0;
+  }
+
+  .site-footer::before {
+    content: none;
+  }
+
+  .footer-mobile-images img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* === TEMPORARY MOBILE-ONLY HERO STACK (localhost test) ===
+   * ≤760px: หน้า Home แสดงเฉพาะ Hero #1 — ซ่อน Hero #2/#3 (display:none
+   * ไม่ทิ้ง layout: ไม่มีช่องว่าง/section ยุบ) · Desktop ≥761px แสดงครบ 3 hero เดิม
+   * ROLLBACK: ลบบล็อกนี้ + คืน className เดิมใน ShowcaseSection.jsx */
+  .showcase-section--desktop-only {
+    display: none;
   }
 
   .catalog {

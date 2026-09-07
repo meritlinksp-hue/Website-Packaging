@@ -1,0 +1,153 @@
+/* =============================================================
+ * TEMPORARY PREMIUM MOBILE HERO CTA — "Explore our packaging"
+ * =============================================================
+ * LOCALHOST EXPERIMENT — มือถือเท่านั้น (≤760px)
+ * Hero รูปมีปุ่ม "EXPLORE OUR PACKAGING" ฝังอยู่ในตัวภาพ
+ * (we-are-nirin-mobile.png: ปุ่ม x[51-391] y[587-640] จาก 1079×1028)
+ * คอมโพเนนต์นี้วาง hotspot ลิงก์โปร่งใสทับบริเวณปุ่ม + effect เสมือนจริง
+ *
+ * ROLLBACK: ลบ 2 ไฟล์นี้ + บล็อกที่คอมเมนต์ "TEMPORARY PREMIUM MOBILE
+ * HERO CTA" ใน ShowcaseSection.jsx (index.css/Header ไม่เกี่ยว)
+ * ============================================================ */
+
+/* ค่า CI เดิมจาก index.css: --pink #ef5688, --purple #6738a2, --ink #2f1750 */
+
+/* แสดงเฉพาะมือถือ — เดสก์ท็อปไม่มีโค้ดนี้ใน DOM เลย (component render null)
+   media query นี้เป็น double safety เท่านั้น */
+.mhcta {
+  display: none;
+}
+@media (max-width: 760px) {
+  .mhcta {
+    display: block;
+  }
+}
+
+@media (max-width: 760px) {
+  /* ===== Hotspot: ครอบปุ่มฝังภาพ + ขยายให้ touch target ≥44px บนจอ 375px =====
+   * ปุ่มจริง x[51-391] y[587-640] → hotspot ขยายเป็น x[24-410] y[550-680]
+   * (พื้นที่ว่างรอบปุ่ม — ไม่ทับข้อความแท็กไลน์ด้านบน/ขวดด้านขวา)
+   * บนจอ 375px = ~134×45px ✓ | 390px = ~139×47px ✓ | 430px = ~153×52px ✓ */
+  .mhcta {
+    position: absolute;
+    left: 2.22%;                 /* 24 / 1079 */
+    top: 53.5%;                  /* 550 / 1028 */
+    width: 35.77%;               /* 386 / 1079 */
+    height: 12.65%;              /* 130 / 1028 */
+    border-radius: 999px;
+    z-index: 1;
+    -webkit-tap-highlight-color: transparent; /* ใช้ feedback ของเราแทน flash เริ่มต้น */
+    outline: none;
+    /* ปล่อยนิ้ว → สปริงกลับพร้อม overshoot เล็กมาก (back-out easing) */
+    transition: transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+  }
+
+  /* ===== แผ่นไฮไลต์ทรง pill — วางตรงตำแหน่งปุ่มฝังภาพพอดี =====
+   * ปุ่มเทียบ hotspot: left (51-24)/386=7.0% · top (587-550)/130=28.5%
+   *                  width 340/386=88.1% · height 53/130=40.8% */
+  .mhcta-glow,
+  .mhcta-shimmer {
+    position: absolute;
+    left: 7%;
+    top: 28.5%;
+    width: 88.1%;
+    height: 40.8%;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+
+  /* สถานะพัก: โปร่งใสสนิท — หน้าตา hero เหมือนเดิม 100% */
+  .mhcta-glow {
+    opacity: 0;
+    background:
+      linear-gradient(100deg, rgba(255, 255, 255, 0) 12%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 88%),
+      linear-gradient(90deg, rgba(239, 86, 136, 0.16), rgba(103, 56, 162, 0.16));
+    box-shadow: 0 0.45rem 1.1rem rgba(239, 86, 136, 0);
+    transition: opacity 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  /* ===== Shimmer: เดินหน้า 1 ครั้ง/การกด (ไปทางลูกศร ›) — ไม่ loop ===== */
+  .mhcta-shimmer {
+    overflow: hidden;
+  }
+  .mhcta-shimmer::before {
+    content: "";
+    position: absolute;
+    inset: -20% auto -20% 0;
+    width: 45%;
+    transform: translateX(-160%) skewX(-18deg);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.38) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    opacity: 0;
+  }
+
+  /* ===== Hover — เฉพาะอุปกรณ์ที่มี hover จริง (จอเดสก์ท็อปแคบ) ===== */
+  @media (hover: hover) {
+    .mhcta:hover .mhcta-glow {
+      opacity: 0.14;
+    }
+    .mhcta:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  /* ===== กด (touch/active): บีบตัวเล็กน้อย + เงานุ่ม + ไฮไลต์ + shimmer 1 ครั้ง =====
+   * press → response → release · ไม่กระโดด · ไม่หมุนต่อเนื่อง */
+  .mhcta:active {
+    transform: scale(0.978) translateY(1px);
+    transition: transform 0.12s ease-out; /* กด: ตอบสนองไว */
+  }
+  .mhcta:active .mhcta-glow {
+    opacity: 0.26;
+    box-shadow: 0 0.45rem 1.1rem rgba(239, 86, 136, 0.28);
+  }
+  .mhcta:active .mhcta-shimmer::before {
+    animation: mhcta-sweep 0.55s ease-out 1 both; /* เล่นครั้งเดียวต่อการกด */
+  }
+
+  @keyframes mhcta-sweep {
+    from {
+      transform: translateX(-160%) skewX(-18deg);
+      opacity: 0;
+    }
+    35% {
+      opacity: 1;
+    }
+    to {
+      transform: translateX(320%) skewX(-18deg);
+      opacity: 0;
+    }
+  }
+
+  /* ===== Keyboard focus — เห็นชัด นุ่มนวล ตามสี CI ===== */
+  .mhcta:focus-visible {
+    outline: 2px solid rgba(239, 86, 136, 0.85);
+    outline-offset: 3px;
+  }
+  .mhcta:focus-visible .mhcta-glow {
+    opacity: 0.2;
+  }
+}
+
+/* ===== prefers-reduced-motion: ตัด motion ทั้งหมด — CTA ยังกดได้/นำทางปกติ ===== */
+@media (prefers-reduced-motion: reduce) {
+  .mhcta,
+  .mhcta:active,
+  .mhcta:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+  .mhcta-shimmer,
+  .mhcta-shimmer::before {
+    display: none !important;
+    animation: none !important;
+  }
+  .mhcta-glow {
+    transition: opacity 0.01s linear !important;
+  }
+}

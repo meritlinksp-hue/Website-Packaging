@@ -1,0 +1,49 @@
+/* =============================================================
+ * TEMPORARY PACKAGING ANIMATION TEST — MOBILE ONLY
+ * Isolated styles สำหรับทดสอบ header animation (localhost เท่านั้น)
+ * - ทุก class ขึ้นต้น ph- ไม่กระทบ CSS เว็บจริงแม้แต่บรรทัดเดียว
+ * - Desktop (≥761px): display:none + component render null → ไม่มีอะไรเกิดขึ้น
+ * ROLLBACK: ลบไฟล์นี้ + MobileHeaderPackaging.jsx + 2 จุดที่คอมเมนต์
+ * "TEMPORARY PACKAGING ANIMATION TEST" ใน Header.jsx
+ * ============================================================ */
+
+.ph-center {
+  /* โซนกลางของ header มือถือ — สูงเท่า logo (3.55rem) → ความสูง header ไม่เปลี่ยน */
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 3.55rem;
+  align-self: center;
+  overflow: hidden;          /* ไม่ล้นแนวนอน ไม่ทับ logo/hamburger */
+  position: relative;
+}
+
+.ph-strip {
+  position: absolute;
+  inset: 0;
+}
+
+.ph-item {
+  /* ตำแหน่งซ้าย (left) ถูกกำหนดจาก JS — ศูนย์กลาง "วัตถุจริง" เว้นระยะเท่ากัน */
+  position: absolute;
+  bottom: 3px;
+  will-change: transform, opacity;
+  /* สถานะเริ่มต้นก่อน JS เขียนทับ (กัน flash) */
+  opacity: 0;
+  transform: translateY(var(--ph-y0, 48px)) rotate(var(--ph-r0, 0deg)) scale(0.55);
+  transform-origin: 50% 100%;
+}
+
+.ph-item img {
+  display: block;
+  height: auto;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* เดสก์ท็อป: ไม่แสดงอะไรเลย (double safety — component ก็ render null อยู่แล้ว) */
+@media (min-width: 761px) {
+  .ph-center {
+    display: none;
+  }
+}

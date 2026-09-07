@@ -1,0 +1,193 @@
+/* =============================================================
+ * ISOLATED PREVIEW STYLES — animation-preview only.
+ * ไม่กระทบสไตล์เว็บไซต์จริงทุก class ขึ้นต้นด้วย ap- (scoped)
+ * ค่า header จำลอง คัดลอกตรง ๆ จาก dev/src/index.css (≤760px)
+ * ============================================================ */
+.ap-page {
+  min-height: 100vh;
+  font-family: "IBM Plex Sans Thai", "Outfit", ui-sans-serif, system-ui, sans-serif;
+  background: linear-gradient(160deg, #ece4f2 0%, #f6eef5 55%, #f8ecf1 100%);
+  color: #2f1750;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  padding: 2rem 1rem 3rem;
+  box-sizing: border-box;
+}
+
+.ap-note {
+  font-size: 0.8rem;
+  color: #6b5a7a;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 36rem;
+}
+
+/* ===== Phone mock ===== */
+.ap-phone {
+  width: 390px;
+  height: 430px;
+  flex: none;
+  background: #141118;
+  border-radius: 54px;
+  padding: 10px;
+  box-shadow: 0 2.2rem 5rem #3d1b5940, 0 0.4rem 1.2rem #3d1b5925;
+  position: relative;
+  box-sizing: border-box;
+}
+.ap-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 44px;
+  overflow: hidden;
+  background: #fbf8fb;
+  position: relative;
+  box-shadow: inset 0 0 0 1px #ffffff2b;
+}
+.ap-statusbar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.6rem 0 2.1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2f1750;
+  font-family: "Outfit", ui-sans-serif, sans-serif;
+}
+.ap-notch {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 26px;
+  background: #141118;
+  border-radius: 20px;
+  z-index: 60;
+}
+
+/* ===== Header จำลอง (≤760px) — โครงสร้าง [LOGO][ANIMATION][MENU] ===== */
+.ap-header {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
+  /* ความสูง auto = padding + เนื้อหา 3.55rem — เท่า header จริง ไม่เพิ่มความสูง */
+  padding: 0.65rem 0.8rem 0.65rem 1rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  border: 1px solid #ffffffb8;
+  border-radius: 1.25rem;
+  background: #fffcfed6;
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  box-shadow: 0 0.8rem 2.8rem #3d1b5921;
+  z-index: 20;
+}
+.ap-brand {
+  flex: none;
+  width: 5.4rem;
+  height: 3.55rem;
+  display: block;
+  position: relative;
+  z-index: 2;
+}
+.ap-brand img {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.ap-menu {
+  flex: none;
+  width: 2.7rem;
+  height: 2.7rem;
+  border: 1px solid #6738a229;
+  border-radius: 0.85rem;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+.ap-menu span {
+  width: 1.15rem;
+  height: 2px;
+  background: #2f1750;
+  border-radius: 2px;
+  display: block;
+}
+
+/* โซนกลาง — อยู่ระหว่าง logo กับ hamburger เท่านั้น overflow hidden
+   → animation ไม่ล้นออกนอกโซน ไม่ทับ logo/menu ไม่ก่อ horizontal overflow */
+.ap-center {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 3.55rem;
+  overflow: hidden;
+  position: relative;
+}
+.ap-strip {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+}
+.ap-item {
+  position: relative;
+  flex: none;
+  align-self: flex-end;
+  margin-bottom: 0.45rem;
+  will-change: transform, opacity;
+  /* สถานะเริ่มต้นก่อน JS เขียนทับ (กัน flash ตอน mount) */
+  opacity: 0;
+  transform: translateY(var(--y0, 58px)) rotate(var(--r0, 0deg)) scale(0.55);
+  transform-origin: 50% 100%;
+}
+.ap-item img {
+  display: block;
+  height: auto;
+  max-width: none;
+}
+
+/* ===== Controls (เฉพาะ preview เท่านั้น) ===== */
+.ap-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.ap-btn {
+  font-family: "Outfit", ui-sans-serif, sans-serif;
+  cursor: pointer;
+  border: 1px solid #6738a229;
+  border-radius: 0.85rem;
+  background: #fff;
+  color: #2f1750;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.6rem 1rem;
+  transition: background-color 0.18s;
+}
+.ap-btn:hover { background: #ef56880f; }
+.ap-btn[disabled] { opacity: 0.45; cursor: default; }
+.ap-btn.is-active {
+  background: #6738a2;
+  border-color: #6738a2;
+  color: #fff;
+}
+.ap-speed-label { font-size: 0.72rem; color: #6b5a7a; letter-spacing: 0.1em; }
