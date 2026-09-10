@@ -90,9 +90,10 @@
   white-space: nowrap;        /* ห้ามตัดบรรทัด — บรรทัดเดียวทุกความกว้าง */
   font-family: "IBM Plex Sans Thai", "Leelawadee UI", "Sukhumvit Set", "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
   font-weight: 700;           /* น้ำหนักจริง 700 (โหลดแล้ว) — bold พรีเมียม ไม่หนาเกิน */
-  font-size: clamp(1.75rem, 9.2vw, 2.4rem); /* 28 → 38.4px — ink ≈ 55–72% ของโลโก้ */
+  font-size: clamp(1.575rem, 8.28vw, 2.16rem); /* localhost refine: -10% จาก clamp(1.75rem, 9.2vw, 2.4rem) */
   line-height: 1.1;
   letter-spacing: 0;          /* ไทยไม่ต้อง tracking — กันสระ/วรรณยุกต์ชนกัน */
+  opacity: 0.9;               /* localhost refine: -10% visual intensity (1 → 0.9) อ่านชัดเหมือนเดิม */
 }
 
 /* สีตาม CI เดิม: ไล่ชมพู → ม่วง (#ef5688 → #6738a2) เหมือน gradient อื่นของเว็บ */

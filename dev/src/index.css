@@ -260,64 +260,54 @@ body {
 }
 
 /* === Product Catalog === */
-.catalog-section {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(2rem, 4vw, 3.5rem);
-  padding: clamp(2.5rem, 5vw, 5rem) 0 0;
+.catalog-page {
+  padding-top: clamp(6.5rem, 11vw, 8.5rem);
+  /* Scoped typography colors — เฉพาะภาษาไทยในหน้า Product Catalog (อ่อนลง สมดุลกับ English) */
+  --catalog-ink: #5b4a68;
+  --catalog-muted: #8d7d9e;
 }
 
-.catalog {
+/* --- Hero: ภาพ "หมวดหมู่สินค้า" แบบเต็มความกว้าง ไม่ crop องค์ประกอบในภาพ --- */
+.catalog-hero-frame {
+  background: #fff;
+  border-block: 1px solid #6738a21a;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1rem 3rem #3d1b5917;
+}
+
+.catalog-hero-frame::after {
+  content: "";
+  pointer-events: none;
+  border: 1px solid #ffffffb3;
+  border-radius: 1rem;
+  position: absolute;
+  inset: 0;
+}
+
+.catalog-hero-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.catalog-page .catalog {
+  padding-top: clamp(0.25rem, 0.5vw, 0.5rem);
   width: min(74rem, 100% - 2.5rem);
   margin: 0 auto;
 }
 
-.catalog-head {
-  text-align: center;
-  max-width: 46rem;
-  margin: 0 auto clamp(2.25rem, 5vw, 3.5rem);
-}
-
-.catalog-kicker {
-  color: var(--pink);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-family: Georgia, serif;
-  font-size: 0.74rem;
-  font-style: italic;
-  margin: 0 0 0.55rem;
-}
-
-.catalog-title {
-  color: var(--catalog-ink);
-  letter-spacing: 0.01em;
-  text-wrap: balance;
-  margin: 0 0 0.8rem;
-  font-family: "IBM Plex Sans Thai", "Leelawadee UI", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  font-size: clamp(1.7rem, 4vw, 2.8rem);
-  font-weight: 400;
-  line-height: 1.35;
-}
-
-.catalog-sub {
-  color: var(--catalog-muted);
-  font-family: "IBM Plex Sans Thai", "Leelawadee UI", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  font-size: clamp(0.88rem, 1.3vw, 0.98rem);
-  font-weight: 400;
-  line-height: 1.7;
-  letter-spacing: 0.02em;
-  margin: 0;
-}
-
+/* --- Category groups container --- */
 .catalog-groups {
   display: flex;
   flex-direction: column;
-  gap: clamp(2.25rem, 4.5vw, 3.75rem);
-  /* เว้นช่องว่างเหนือหมวดแรก — ให้ chip bar sticky ไม่ชิดติดหัวข้อหมวด
-     (scroll-margin-top อย่างเดียวไม่พอ เพราะ chip bar อยู่ชิด section ใน document flow
-     กรณีที่ยังไม่ถูกปักที่ sticky limit มันจะเลื่อนมาชิดหัวข้อพอดี) */
-  margin-top: 4rem;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  margin-top: 0.5rem;
 }
+
+/* --- Category chip bar: sticky ใต้ floating header + scroll-spy --- */
 
 .catalog-group {
   position: relative;
@@ -684,6 +674,76 @@ body {
     top: calc(1rem + env(safe-area-inset-top, 0px));
   }
 
+  /* === MOBILE ONLY — subtle animated aurora behind header glass · FIX v2 (localhost test)
+   * สาเหตุเดิมที่ "มองไม่เห็น" (จากการ inspect โค้ดจริง):
+   *   1) alpha สุทธิต่ำเกิน: gradient 17–20% × layer opacity ~0.6 ≈ 10–12%
+   *      ทับกระจกขาว #fffcfed6 → สีเพี้ยนจริง ~5–8/255 = ต่ำกว่าเกณฑ์การมองเห็น
+   *   2) transform: scale(1.15) ดันกล่อง ::before หลุดขอบ header —
+   *      border-radius:inherit clip ตามกล่องที่ถูก scale ไม่ใช่ตาม header
+   * วิธีแก้ v2:
+   *   - ไม่ transform ทั้งสองชั้น → background ที่ inset:0 + border-radius:inherit
+   *     วาดอยู่ในกรอบ header เสมอ 100% (ไม่ spill ไม่ต้อง overflow:hidden
+   *     → เมนู .section-nav.open ไม่ถูกตัด)
+   *   - 2 ชั้น ::before/::after เวอร์ opacity สวนเฟส (12s / 14s + delay −6s)
+   *     → แสงดู "ไหลเคลื่อนข้าม header" ทั้งที่ animate opacity เท่านั้น
+   *     (GPU ล้วน ไม่มี repaint — ไม่มี transform ไม่มี filter)
+   *   - alpha เพิ่มเป็น 37–49% × opacity peak 0.8–0.9 = สุทธิ ~28–33%
+   *     → เห็นชัดแบบนุ่มนวล แต่กระจกขาวยังเด่น (bg เดิม 0.84 ไม่แตะ)
+   *   - content (logo/ขวด/ข้อความ/hamburger) ยัง z-index:1 เหนือทั้งสองชั้น
+   *     + pointer-events:none ทั้งคู่ → คลิก/แตะทุกจุดปกติ
+   * ROLLBACK: ลบบล็อกนี้ทั้งก้อน (จนถึงปิด reduced-motion) */
+  .floating-header::before,
+  .floating-header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;      /* clip ตามมุมโค้ง header โดยไม่แตะ overflow */
+    pointer-events: none;        /* ::after ห้ามบังคลิก hamburger/logo */
+    z-index: 0;
+    transform: none;
+  }
+
+  .floating-header::before {
+    background:
+      radial-gradient(46% 150% at 12% 24%, #cbb9ee5e 0%, transparent 62%),
+      radial-gradient(52% 170% at 52% 118%, #eadff878 0%, transparent 64%);
+    opacity: 0.75;
+    animation: header-aurora-a 12s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  .floating-header::after {
+    background:
+      radial-gradient(40% 150% at 88% 14%, #f6c6db7d 0%, transparent 58%),
+      radial-gradient(32% 120% at 94% 84%, #c7dbf36e 0%, transparent 56%);
+    opacity: 0.55;
+    animation: header-aurora-b 14s ease-in-out -6s infinite;
+    will-change: opacity;
+  }
+
+  @keyframes header-aurora-a {
+    0%, 100% { opacity: 0.6; }
+    50%      { opacity: 0.9; }
+  }
+
+  @keyframes header-aurora-b {
+    0%, 100% { opacity: 0.45; }
+    50%      { opacity: 0.8; }
+  }
+
+  /* Aurora sits behind content — layout-neutral (no size/position change) */
+  .floating-header > .brand,
+  .floating-header > .ph-center,
+  .floating-header > .nav-toggle {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .floating-header::before { animation: none; opacity: 0.7; }
+    .floating-header::after  { animation: none; opacity: 0.45; }
+  }
+
   /* === MOBILE FIX — เต็มความกว้าง viewport + HEADER ต้อง fixed จริง (localhost test) ===
    * สาเหตุที่แท้จริงของ "header หายตอนเปิดหน้า ต้อง scroll ก่อนถึงเห็น":
    * iOS Safari / Android WebView บางเครื่อง — เมื่อ html/body มี overflow-x: hidden/clip
@@ -708,6 +768,11 @@ body {
     /* TEMPORARY PREMIUM MOBILE MENU ANIMATION (localhost test)
        ROLLBACK: ลบบล็อก "TEMPORARY PREMIUM MOBILE MENU ANIMATION" ทั้งหมดในไฟล์นี้ */
     transition: background-color 0.18s, transform 0.15s ease;
+  }
+
+  /* Hide product category dropdown from mobile hamburger menu */
+  .nav-dropdown {
+    display: none;
   }
 
   /* กดปุ่ม → ตอบสนองสัมผัสทันที เบา ๆ (scale + จมลง 1px) */
@@ -737,7 +802,7 @@ body {
     gap: 0.2rem;
     border: 1px solid #ffffffb8;
     border-radius: 1.1rem;
-    background: #fffcfef7;
+    background: #fffcfee0;
     backdrop-filter: blur(18px) saturate(135%);
     -webkit-backdrop-filter: blur(18px) saturate(135%);
     box-shadow: 0 1.2rem 2.8rem #3d1b5930;
@@ -745,8 +810,8 @@ body {
     display: flex;
     position: absolute;
     top: calc(100% + 0.7rem);
-    left: 0;
     right: 0;
+    width: 50vw;
     /* TEMPORARY PREMIUM MOBILE MENU ANIMATION — เลื่อนลง + เฟดเขา ช้ากว่าตอนปิดเล็กน้อย
        (ease-out เกลี้ยว ไม่ bounce · transform/opacity เท่านั้น = GPU-friendly) */
     opacity: 1;
@@ -1045,7 +1110,7 @@ body {
 }
 
 .catalog-page .catalog {
-  padding-top: clamp(2rem, 4vw, 3.25rem);
+  padding-top: clamp(0.25rem, 0.5vw, 0.5rem);
 }
 
 /* --- Category chip bar: sticky ใต้ floating header + scroll-spy --- */
@@ -1111,8 +1176,9 @@ body {
 /* --- หัวข้อ/คำอธิบายหมวด --- */
 .catalog-group {
   /* Offset ตอนกด Category:
-     Header fixed (top:1rem ⇒ ก้น ~5.9rem) + chip bar sticky (top 6.4rem + สูง ~3.1rem)
-     ⇒ รวม ~9.5rem — ให้หัวข้อหมวดตกต่ำกว่าแถบ navigation ประมาณ 60–70px */
+     Header fixed (top:1rem ⇒ ก้น ~5.9rem) + chip bar sticky (top ~6.4rem + สูง ~3.1rem)
+     ⇒ รวม ~9.5rem — ให้หัวข้อหมวดตกต่ำกว่าแถบ navigation ประมาณ 60–70px *
+     (ดู mobile override เพิ่มเติมด้านล่าง: .catalog-chips top ~5.2rem) */
   scroll-margin-top: 13.5rem;
 }
 
@@ -1490,6 +1556,26 @@ body {
   transform: translateX(2px);
 }
 
+/* =====================================================================
+ * Desktop only (≥761px) — Product Catalog dropdown Thai typography
+ * (localhost refinement only — do not commit)
+ * Hovering the top-level Product Catalog nav item reveals the category
+ * dropdown; Thai labels ease 600 → 400 for a lighter, premium feel.
+ * 400 is the nearest available lighter weight (IBM Plex Sans Thai loads
+ * 400/500/600/700 — 300 would be faux-synthesized). Font family kept.
+ * Other nav items (Home/About/OEM/Contact) untouched. Mobile (≤760px)
+ * untouched — this block never applies there.
+ * ===================================================================== */
+@media (min-width: 761px) {
+  .nav-item-catalog .nav-dropdown a {
+    transition: color 0.18s, background-color 0.18s, transform 0.18s, font-weight 0.18s ease;
+  }
+  .nav-item-catalog:hover .nav-dropdown a,
+  .nav-item-catalog:focus-within .nav-dropdown a {
+    font-weight: 400;
+  }
+}
+
 .nav-dropdown .nav-dropdown-th {
   font-size: 0.9rem;
 }
@@ -1682,6 +1768,9 @@ body {
   .oem {
     width: calc(100% - 1.5rem);
   }
+  .oem-head {
+    display: none;
+  }
 }
 
 /* =====================================================================
@@ -1766,6 +1855,133 @@ body {
 @media (max-width: 760px) {
   .contact {
     width: calc(100% - 1.5rem);
+  }
+  .contact-head {
+    display: none;
+  }
+}
+
+/* =====================================================================
+ * Mobile Product Catalog — Tighten vertical spacing
+ * Desktop (≥761px) remains completely unchanged.
+ * ===================================================================== */
+@media (max-width: 760px) {
+  /* Bring chip bar directly under the top image */
+  .catalog-page .catalog {
+    padding-top: 0.25rem;
+  }
+
+  .catalog-groups {
+    margin-top: 0.35rem;
+  }
+
+  /* Tighten category title → description spacing */
+  .catalog-group-title {
+    margin-bottom: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+
+  /* Tighten description → product grid spacing */
+  .catalog-group-desc {
+    margin-bottom: 0.5rem;
+  }
+}
+/* =====================================================================
+ * Mobile Product Catalog — Category Navigation (≤760px)
+ * Compact premium chip bar refinements for Mobile only.
+ * Desktop (≥761px) remains completely unchanged — this block is
+ * scoped to the mobile breakpoint only.
+ * ===================================================================== */
+@media (max-width: 760px) {
+  /* Mobile chips — header เลื่อนตามหน้าไปแล้ว (ดู header rule ท้ายไฟล์)
+     chip bar จึง pin ชิดบน viewport แทน (top: 0.75rem) ไม่ทับซ้อนกับ header */
+  .catalog-chips {
+    top: 0.75rem;
+    z-index: 10;
+    display: flex;
+    justify-content: flex-start; /* กึ่งกลางผ่าน auto-margin ของ chip ตัวแรก/สุดท้าย (scroll ปลอดภัยเมื่อล้น) */
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    background: linear-gradient(180deg, #fffdfef2, #fffcfef2);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid #ffffffcc;
+    border-radius: 999px;
+    box-shadow: 0 0.5rem 1.4rem #3d1b5921, inset 0 1px 0 #ffffffd9;
+    padding: 0.42rem 0.55rem;
+    margin: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  .catalog-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Chips: compact one-line pills, premium minimal
+     กึ่งกลางเมื่อพื้นที่พอ + scroll ได้เมื่อล้น: auto-margin ซ้าย/ขวา
+     (พื้นที่ว่างถูกดูดเท่ากันสองข้าง = กลาง · ล้น = margin เหลือ 0 = ไม่ตัดปุ่มแรก) */
+  .catalog-chip:first-child {
+    margin-left: auto;
+  }
+  .catalog-chip:last-child {
+    margin-right: auto;
+  }
+  .catalog-chip {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    border: 1px solid #6738a226;
+    border-radius: 999px;
+    background: #fdfcfe;
+    color: var(--catalog-ink);
+    padding: 0.42rem 0.85rem;
+    font-family: "IBM Plex Sans Thai", "Leelawadee UI", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.45;
+    text-decoration: none;
+    transition: color 0.18s, background-color 0.18s, border-color 0.18s,
+      box-shadow 0.18s, transform 0.15s ease;
+  }
+
+  /* Tap feedback: tactile micro-scale + shift */
+  .catalog-chip:active {
+    transform: scale(0.975) translateY(1px);
+  }
+
+  /* Active chip: subtle CI wash + stronger border + soft depth */
+  .catalog-chip.active,
+  .catalog-chip.active:hover,
+  .catalog-chip.active:focus-visible {
+    color: var(--purple);
+    background: linear-gradient(135deg, #6738a21c, #ef56881c);
+    border-color: #6738a24d;
+    box-shadow: 0 0.2rem 0.7rem #3d1b590f;
+  }
+
+  /* === MOBILE CATALOG ONLY — header เลื่อนตามหน้า ไม่ fixed (localhost fix) ===
+   * ขอบเขต: ≤760px + เฉพาะหน้าที่มี .catalog-page (main:has)
+   *   → หน้าอื่นบนมือถือ + Desktop (≥761px) ไม่กระทบ 100%
+   * เปลี่ยนแค่ position: fixed → absolute (top/width/margin เดิมทุก px)
+   *   → ตอนอยู่บนสุด header เหมือนเดิม · scroll ลง header เลื่อนตามหน้าไป
+   *   chip bar (sticky top 0.75rem) จึงไม่ถูก header บังอีก
+   * เมนู hamburger/overlay/animation เดิมไม่กระทบ (header ยัง positioned,
+   *   panel absolute อ้างอิง header เหมือนเดิม, overlay fixed เหมือนเดิม)
+   * scroll-margin: header ไม่อยู่แล้ว เหลือแค่ chip bar (~0.75 + ~2.6rem)
+   *   → ลดจาก 13rem เหลือ 4.2rem ไม่งั้นกด chip แล้วหัวข้อโดดห่างเกิน */
+  main:has(.catalog-page) .floating-header {
+    position: absolute;
+  }
+
+  main:has(.catalog-page) .catalog-group {
+    scroll-margin-top: 4.2rem;
   }
 }
 

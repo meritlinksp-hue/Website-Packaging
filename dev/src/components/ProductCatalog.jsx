@@ -12,14 +12,15 @@ import { catalogHero, catalogCategories } from '../data/products';
 /* =====================================================================
  * ลำดับหมวดหมู่ที่ใช้แสดงผลในหน้า Product Catalog
  * - จัดลำดับตอน render เท่านั้น (ไม่แก้ข้อมูลต้นฉบับใน products.js)
- * - cream-balm-tubes (หลอดครีม / Balm) → แสดงเป็นหมวดแรกสุดเสมอ
+ * - pump-bottle (ขวดปั๊ม) → แสดงเป็นหมวดแรกสุดเสมอ
  * - หมวดอื่น ๆ → คงลำดับเดิมตาม catalogCategories ต่อจากหมวดแรก
+ *   (boxes → pouches → serum → cream-jar)
  * หมายเหตุ: เป็นการจัดเรียง reference ของ object เดิม (ไม่ clone ข้อมูล)
  *   จึงไม่กระทบการค้นหาหมวดด้วย identity ของ product ใน lightbox
  * ===================================================================== */
 const orderedCatalogCategories = [
-  ...catalogCategories.filter((category) => category.id === 'cream-balm-tubes'),
-  ...catalogCategories.filter((category) => category.id !== 'cream-balm-tubes'),
+  ...catalogCategories.filter((category) => category.id === 'pump-bottle'),
+  ...catalogCategories.filter((category) => category.id !== 'pump-bottle'),
 ];
 
 /* =====================================================================
@@ -193,6 +194,7 @@ function ProductLightbox({ preview, onClose }) {
 }
 
 export default function ProductCatalog() {
+  const chipsRef = useRef(null);
   const [activeId, setActiveId] = useState(orderedCatalogCategories[0]?.id ?? null);
   const [preview, setPreview] = useState(null);
 
@@ -225,6 +227,15 @@ export default function ProductCatalog() {
       // scroll-margin-top ของ section จะเว้นระยะให้ Header + chip bar ไม่บังหัวข้อ
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setActiveId(categoryId);
+      // Mobile: auto-center tapped chip inside the horizontal chip bar
+      const bar = chipsRef.current;
+      const chip = event.currentTarget;
+      if (bar && chip) {
+        const chipLeft = chip.offsetLeft ?? 0;
+        const chipWidth = chip.clientWidth ?? 0;
+        const targetLeft = chipLeft - bar.clientWidth / 2 + chipWidth / 2;
+        bar.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+      }
     }
   };
 
@@ -254,17 +265,8 @@ export default function ProductCatalog() {
       </section>
 
       <div className="catalog">
-        <section className="catalog-head">
-          <p className="catalog-kicker">Product Catalog</p>
-          <h2 className="catalog-title">รวมบรรจุภัณฑ์ครบทุกประเภท</h2>
-          <p className="catalog-sub">
-            คัดสรรบรรจุภัณฑ์เครื่องสำอางแบบ OEM หลากหลายรูปแบบ เรียงตามหมวดหมู่สินค้า{' '}
-            ตอบโจทย์ทุกการใช้งาน
-          </p>
-        </section>
-
         {/* Category Navigation — sticky ใต้ header เลื่อนไปแต่ละหมวดได้ */}
-        <nav className="catalog-chips" aria-label="ไปยังหมวดหมู่สินค้า">
+        <nav ref={chipsRef} className="catalog-chips" aria-label="ไปยังหมวดหมู่สินค้า">
           {orderedCatalogCategories.map((category) => (
             <a
               key={category.id}
@@ -281,7 +283,7 @@ export default function ProductCatalog() {
         </nav>
 
         <div className="catalog-groups">
-          {/* กลุ่ม A — สินค้าที่มีภาพจริง (แสดงก่อนทั้งหมด ตามลำดับหมวดที่กำหนด: cream-balm-tubes แรกสุด) */}
+          {/* กลุ่ม A — สินค้าที่มีภาพจริง (แสดงก่อนทั้งหมด ตามลำดับหมวดที่กำหนด: pump-bottle แรกสุด) */}
           {realImageCategories.map((category) => (
             <section
               key={category.id}

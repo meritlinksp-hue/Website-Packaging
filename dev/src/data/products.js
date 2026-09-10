@@ -2,9 +2,6 @@ export const showcaseItems = [
   {
     id: 'about-us',
     image: '/images/we-are-nirin.png',
-    // Mobile-only hero variant (แสดงเฉพาะจอ ≤760px ผ่าน <picture><source>)
-    // NEW: hero-mobile/New Hero.png (ชื่อไฟล์มีช่องว่าง → เข้ารหัส %20 ใน srcSet
-    // ภาพเดิม we-are-nirin-mobile.png ยังอยู่ครบเพื่อ rollback)
     mobileImage: '/images/hero-mobile/New%20Hero.png',
     alt: 'We are Nirin Packaging ผู้ผลิตบรรจุภัณฑ์เครื่องสำอางแบบ OEM ครบวงจร',
   },
@@ -15,7 +12,7 @@ export const showcaseItems = [
   },
   {
     id: 'product-catalog',
-        image: '/images/packaging-solutions.png',
+    image: '/images/packaging-solutions.png',
     alt: 'Packaging Solutions รวมบรรจุภัณฑ์และบริการออกแบบแพ็กเกจแบบครบวงจร',
   },
 ];
@@ -28,12 +25,11 @@ export const navItems = [
     href: '#/product-catalog',
     page: 'catalog',
     children: [
-      { id: 'pump-bottles', th: 'ขวดปั๊ม', en: 'Pump Bottles' },
-      { id: 'serum-bottles', th: 'ขวดเซรั่ม', en: 'Serum Bottles' },
-      { id: 'cream-jars', th: 'กระปุกครีม', en: 'Cream Jars' },
-      { id: 'cream-balm-tubes', th: 'หลอดครีม / Balm', en: 'Cream & Balm Tubes' },
       { id: 'boxes', th: 'กล่อง', en: 'Boxes' },
       { id: 'pouches', th: 'ซอง', en: 'Pouches' },
+      { id: 'serum', th: 'เซรั่ม', en: 'Serum' },
+      { id: 'cream-jar', th: 'กระปุกครีม', en: 'Cream Jar' },
+      { id: 'pump-bottle', th: 'ขวดปั๊ม', en: 'Pump Bottle' },
     ],
   },
   { label: 'OEM Process', href: '#/oem-process', page: 'oem' },
@@ -55,165 +51,15 @@ export const catalogHero = {
 
 export const catalogCategories = [
   {
-    id: 'pump-bottles',
-    en: 'Pump Bottles',
-    th: 'ขวดปั๊ม',
-    description:
-      'ขวดปั๊มสำหรับโลชั่นและผลิตภัณฑ์ดูแลผิวกาย ให้การใช้งานสะดวก ถูกสุขลักษณะ และดูสมาร์ททุกการใช้งาน',
-    products: [
-      {
-        name: 'Sunscreen Pump Bottle',
-        nameTh: 'ขวดปั๊มซันสกรีน',
-        image: '/images/products/bottle-sunscreen-pump.png',
-        alt: 'ขวดปั๊มซันสกรีน NIRIN 50+ ทรงหัวกลมแบน สีเขียว ชมพู และฟ้าพาสเทล วางบนแท่นโทนเบจ',
-      },
-    ],
-  },
-  {
-    id: 'serum-bottles',
-    en: 'Serum Bottles',
-    th: 'ขวดเซรั่ม',
-    description:
-      'ขวดเซรั่มสำหรับผลิตภัณฑ์บำรุงผิวหน้า ช่วยให้การปิด-เปิดใช้งานง่าย ควบคุมปริมาณได้อย่างแม่นยำ',
-    products: [
-      {
-        name: 'Serum Applicator Bottle',
-        nameTh: 'ขวดเซรั่มแอปพลิเคเตอร์',
-        image: '/images/products/serum-applicator-bottle.jpg',
-        alt: 'ขวดเซรั่มแอปพลิเคเตอร์รูปทรงแท่ง เลือกหัวใช้งานได้หลากหลาย เช่น หัวม้วน หัวแปรง และหัวหยด',
-      },
-    ],
-  },
-  {
-    id: 'cream-jars',
-    en: 'Cream Jars',
-    th: 'กระปุกครีม',
-    description:
-      'กระปุกครีมสำหรับครีมบำรุงผิวหน้าและผิวกาย เพิ่มมิติความพรีเมียมให้แบรนด์ของคุณตั้งแต่แรกเห็น',
-    products: [
-      {
-        name: 'Airless Pump Jar',
-        nameTh: 'กระปุกแอร์เลสพร้อมปั๊ม',
-        image: '/images/products/กระปุก 1.png',
-        alt: 'กระปุกแอร์เลสสีขาวพร้อมหัวปั๊มและฝาพลาสติกใส BSA 50 และ BSA 30 วางบนฉากโทนพาสเทลเขียวมินต์',
-      },
-    ],
-  },
-  {
-    id: 'cream-balm-tubes',
-    en: 'Cream & Balm Tubes',
-    th: 'หลอดครีม / Balm',
-    description:
-      'หลอดบีบและหลอดแอร์เลสสำหรับครีม บาล์ม และผลิตภัณฑ์ดูแลผิว รองรับการใช้งานได้หลากหลายประเภท',
-    products: [
-      {
-        name: 'Dual Chamber Tube',
-        nameTh: 'หลอดสองช่อง',
-        image: '/images/products/tube-dual-chamber.png',
-        alt: 'หลอดสองช่อง Dual Chamber Tube สีพาสเทล พร้อมหัวปิดแบบหมุน',
-      },
-      {
-        name: 'Skincare Soft Tube',
-        nameTh: 'หลอดสกินแคร์',
-        image: '/images/products/tube-skincare.png',
-        alt: 'หลอดสกินแคร์ผิวสัมผัสด้าน โทนชมพู ม่วง และฟ้า พร้อมฝาทรงกลม',
-      },
-      {
-        name: 'Body Scrub Tube',
-        nameTh: 'หลอดบอดี้สครับ',
-        image: '/images/products/tube-body-scrub.jpg',
-        alt: 'หลอดบอดี้สครับแบบบีบทั้งสองด้าน โทนเหลือง ชมพู และเขียวพาสเทล',
-      },
-      {
-        name: 'Lip Balm Tube',
-        nameTh: 'หลอดลิปบาล์ม',
-        image: '/images/products/tube-lip-balm.jpg',
-        alt: 'หลอดลิปบาล์มขนาดเล็ก พร้อมหัวปิดเกลียวและหัวช่วยเกลี่ยบนบาล์ม',
-      },
-      {
-        name: 'Soft Touch Tube',
-        nameTh: 'หลอดซอฟต์ทัช',
-        image: '/images/products/tube-soft-touch.jpg',
-        alt: 'หลอดครีมซอฟต์ทัชโทนส้ม เขียว และครีม พร้อมฝาทรงพื้นเรียบ',
-      },
-      {
-        name: 'Face Cream Tube',
-        nameTh: 'หลอดครีมบำรุงผิว',
-        image: '/images/products/tube-face-cream.jpg',
-        alt: 'หลอดครีมบำรุงผิวสีครีม พร้อมลูกบิดทรงกลมสีน้ำตาลทั้งสองด้าน',
-      },
-      {
-        name: 'Sunscreen Squeeze Tube',
-        nameTh: 'หลอดซันสกรีนแบบบีบ',
-        image: '/images/products/tube-sunscreen.jpg',
-        alt: 'หลอดซันสกรีนแบบบีบ โทนพาสเทล พร้อมห่วงแขวนและฝาแบบหมุน',
-      },
-      {
-        name: 'Airless Pump Tube',
-        nameTh: 'หลอดแอร์เลส',
-        image: '/images/products/tube-airless-pump.jpg',
-        alt: 'หลอดแอร์เลสพร้อมหัวปั๊มโปร่งแสง โทนชมพู ม่วง และเขียวพาสเทล',
-      },
-      {
-        name: 'Cleansing Tube',
-        nameTh: 'หลอดคลีนซิ่ง',
-        image: '/images/products/tube-cleansing.jpg',
-        alt: 'หลอดคลีนซิ่งแบบคว่ำฝา โทนชมพู ฟ้า และเหลืองพาสเทล',
-      },
-      {
-        name: 'Hand Cream Tube',
-        nameTh: 'หลอดครีมทามือ',
-        image: '/images/products/tube-hand-cream.jpg',
-        alt: 'หลอดครีมทามือสีเขียวพาสเทล พร้อมฝาทรงกลมโค้งมน',
-      },
-      {
-        name: 'Toothpaste Tube',
-        nameTh: 'หลอดยาสีฟัน',
-        image: '/images/products/tube-toothpaste.jpg',
-        alt: 'หลอดยาสีฟันลายการ์ตูนน่ารัก โทนเหลืองครีม พร้อมฝาสีฟ้า',
-      },
-      {
-        name: 'Facial Cleanser Tube',
-        nameTh: 'หลอดล้างหน้า',
-        image: '/images/products/tube-facial-cleanser.jpg',
-        alt: 'หลอดล้างหน้าไล่สีชมพูอมส้ม วางบ้างานนำเสนอโทนชมพู',
-      },
-      {
-        name: 'Hand Cream Tube Collection',
-        nameTh: 'ชุดหลอดครีมทามือ',
-        image: '/images/products/tube-hand-cream-set.png',
-        alt: 'ชุดหลอดครีมทามือ NIRIN 4 สี เทา ม่วง ฟ้า และชมพู ตั้งเรียงบนแท่นทรงกระบอกสีขาว',
-      },
-      {
-        name: 'Heart-Shaped Airless Tube',
-        nameTh: 'หลอดแอร์เลสรูปหัวใจ',
-        image: '/images/products/tube-heart-airless.png',
-        alt: 'หลอดแอร์เลสรูปหัวใจพร้อมหัวปั๊ม สีเขียว ชมพู ฟ้า และม่วง บนพื้นหลังโทนพาสเทล',
-      },
-      {
-        name: 'Sunscreen Tube Gift Set',
-        nameTh: 'ชุดหลอดซันสกรีนพร้อมกล่อง',
-        image: '/images/products/Hd59b55b325444e6d91abba477e01d54ee.png',
-        alt: 'ชุดหลอดซันสกรีน plastic fun SPF50+ PA+++ 4 สีพาสเทล ฟ้า ชมพู ม่วง และส้ม พร้อมฝาดำ บรรจุในกล่องชมพูบนถาดวงกลมสีแดง',
-      },
-    ],
-  },
-  {
     id: 'boxes',
     en: 'Boxes',
     th: 'กล่อง',
     description:
-      'กล่องบรรจุภัณฑ์สำหรับแพ็กเกจจิ้งสินค้า เสริมภาพลักษณ์แบรนด์ให้ดูสมบูรณ์และพรีเมียม',
+      'กล่องบรรจุภัณฑ์สำหรับเครื่องสำอางและตัวอย่างสินค้า มอบความปลอดภัยและความสวยงามให้แบรนด์ของคุณ',
     products: [
       {
-        name: 'Coffee Box Bag',
-        nameTh: 'กล่องถุงกาแฟพร้อมหูหิ้ว',
-        image: '/images/products/box-coffee-bag.png',
-        alt: 'กล่องถุงกาแฟสีน้ำเงินพร้อมหูหิ้ว ดีไซน์ Everyday Coffee บนฉากหลังโทนส้ม พร้อมแก้วกาแฟและชิ้นเค้ก',
-      },
-      {
-        name: 'NIRIN Dessert Mailer Box',
-        nameTh: 'กล่องดีเซิร์ต NIRIN',
+        name: 'Dessert Box',
+        nameTh: 'กล่องดีเซิร์ต',
         image: '/images/products/6565.png',
         alt: 'กล่องดีเซิร์ต NIRIN สีฟ้าหม่นแบบเปิดพับพร้อมสลักครีบ ด้านในลายหินอ่อนชมพู-ฟ้า พิมพ์ข้อความ Dessert Box',
       },
@@ -263,7 +109,7 @@ export const catalogCategories = [
         name: "Ashley's Tent Gift Box",
         nameTh: 'กล่องของขวัญทรงสามเหลี่ยม Ashley',
         image: '/images/products/Ua27e9eebf628471e8b0a58901c4afbc95.jpg',
-        alt: "กล่องของขวัญทรงปริซึมสามเหลี่ยมสีเขียวเมจิกต้า พิมพ์ลายเซ็น Ashley's สีขาวพร้อมโมโนแกรม ผูกริบบินเขียวเข้มเป็นโบว์",
+        alt: "กล่องของขวัญทรงมีปริซึมสามเหลี่ยมสีเขียวเมจิกต้า พิมพ์ลายเซ็น Ashley's สีขาวพร้อมโมโนแกรม ผูกริบบินเขียวเข้มเป็นโบว์",
       },
     ],
   },
@@ -291,6 +137,141 @@ export const catalogCategories = [
         nameTh: 'ถุงกระดาษหูหิ้ว NIRIN',
         image: '/images/products/ถุง 1.png',
         alt: 'ถุงกระดาษหูหิ้วสีชมพูพร้อมโลโก้ NIRIN ริบบินหูหิ้วพิมพ์ลาย TASTY วางบนโต๊ะอาหารเช้าพร้อมเบเกอรี่',
+      },
+    ],
+  },
+  {
+    id: 'serum',
+    en: 'Serum',
+    th: 'เซรั่ม',
+    description:
+      'เซรั่มและบรรจุภัณฑ์สำหรับผลิตภัณฑ์บำรุงผิวหน้าระดับพรีเมียม ช่วยเพิ่มความน่าทึ่งให้กับแบรนด์ของคุณ',
+    products: [
+      {
+        name: 'Serum Bottle Collection',
+        nameTh: 'ขวดเซรั่มชุดแต่งหน้า',
+        image: '/images/products/เซรั่ม/LINE_ALBUM_เซรั่ม_260909_1.jpg',
+        alt: 'ชุดขวดเซรั่มโทนพาสเทลหลากหลายสี วางเรียงบนฉากโทนขาวอมครีม',
+      },
+      {
+        name: 'Serum Dropper Bottle',
+        nameTh: 'ขวดเซรั่มหัวหยด',
+        image: '/images/products/เซรั่ม/LINE_ALBUM_เซรั่ม_260909_2.jpg',
+        alt: 'ขวดเซรั่มรูปทรงเรียวพร้อมหัวหยดแก้ว วางบนฉากโทนเบจอ่อน',
+      },
+      {
+        name: 'Serum Capsule',
+        nameTh: 'แคปซูลเซรั่ม',
+        image: '/images/products/เซรั่ม/LINE_ALBUM_เซรั่ม_260909_3.jpg',
+        alt: 'แคปซูลเซรั่มทรงกลมโปร่งแสง ผลิตจากวัสดุอ่อนนุ่ม ให้ความรู้สึกหรูหรา',
+      },
+      {
+        name: 'Serum Ampoule Bottle',
+        nameTh: 'ขวดแอมโพลเซรั่ม',
+        image: '/images/products/เซรั่ม/LINE_ALBUM_เซรั่ม_260909_4.jpg',
+        alt: 'ขวดแอมโพลเซรั่มทรงกระบอกเล็ก สีโทนใส่วาว วางเรียงบนแท่นวงกลม',
+      },
+      {
+        name: 'Serum Spray Bottle',
+        nameTh: 'ขวดเซรั่มพ่นละออง',
+        image: '/images/products/เซรั่ม/LINE_ALBUM_เซรั่ม_260909_5.jpg',
+        alt: 'ขวดเซรั่มพ่นละอองทรงเรียว เท้าห้อยสวยงาม บรรจุบนแท่นโทนพาสเทล',
+      },
+      {
+        name: 'Serum Essence Bottle',
+        nameTh: 'ขวดเซรั่มเอนไซม์',
+        image: '/images/products/เซรั่ม/LINE_ALBUM_เซรั่ม_260909_6.jpg',
+        alt: 'ขวดเซรั่มเอนไซม์ทรงกระบอกสูง โปร่งแสงบางส่วน บรรจุบนฉากโทนขาว',
+      },
+    ],
+  },
+  {
+    id: 'cream-jar',
+    en: 'Cream Jar',
+    th: 'กระปุกครีม',
+    description:
+      'กระปุกครีมสำหรับครีมบำรุงผิวหน้าและผิวกาย เพิ่มมิติความพรีเมียมให้แบรนด์ของคุณตั้งแต่แรกเห็น',
+    products: [
+      {
+        name: 'Airless Cream Jar',
+        nameTh: 'กระปุกครีมแอร์เลส',
+        image: '/images/products/กระปุกครีม/LINE_ALBUM_กระปุก_260909_1.jpg',
+        alt: 'กระปุกครีมแอร์เลสสีขาวพร้อมหัวปั๊ม บรรจุบนฉากโทนพาสเทล',
+      },
+      {
+        name: 'Cream Jar with Spoon',
+        nameTh: 'กระปุกครีมพร้อมช้อน',
+        image: '/images/products/กระปุกครีม/LINE_ALBUM_กระปุก_260909_2.jpg',
+        alt: 'กระปุกครีมทรงกระบอกพร้อมช้อนพลาสติกโทนเขียวอ่อน',
+      },
+      {
+        name: 'Premium Cream Jar',
+        nameTh: 'กระปุกครีมพรีเมียม',
+        image: '/images/products/กระปุกครีม/LINE_ALBUM_กระปุก_260909_3.jpg',
+        alt: 'กระปุกครีมหรูหราผิวสัมผัสเมทัล รัดกุมด้วยสายรัดกระดาษ',
+      },
+      {
+        name: 'Glass Cream Jar',
+        nameTh: 'กระปุกครีมแก้ว',
+        image: '/images/products/กระปุกครีม/LINE_ALBUM_กระปุก_260909_4.jpg',
+        alt: 'กระปุกครีมแก้วใสทรงกระบอกมีสีต่าง ๆ วางเรียงบนชั้น',
+      },
+      {
+        name: 'Ceramic Cream Jar',
+        nameTh: 'กระปุกครีมเซรามิก',
+        image: '/images/products/กระปุกครีม/LINE_ALBUM_กระปุก_260909_5.jpg',
+        alt: 'กระปุกครีมเซรามิกเผา EOF ทำมือ โทนน้ำตาลธรรมชาติ',
+      },
+      {
+        name: 'Cream Jar Duo Set',
+        nameTh: 'เซ็ตกระปุกครีม 2 ชิ้น',
+        image: '/images/products/กระปุกครีม/LINE_ALBUM_กระปุก_260909_6.jpg',
+        alt: 'เซ็ตกระปุกครีมคู่สีโทนพาสเทล พร้อมฝาปิดแม่เหล็ก',
+      },
+    ],
+  },
+  {
+    id: 'pump-bottle',
+    en: 'Pump Bottle',
+    th: 'ขวดปั๊ม',
+    description:
+      'ขวดปั๊มสำหรับโลชั่นและผลิตภัณฑ์ดูแลผิวกาย ให้การใช้งานสะดวก ถูกสุขลักษณะ และดูสมาร์ททุกการใช้งาน',
+    products: [
+      {
+        name: 'Sunscreen Pump Bottle',
+        nameTh: 'ขวดปั๊มซันสกรีน',
+        image: '/images/products/ขวดปั๊ม/LINE_ALBUM_ปั๊ม_260909_1.jpg',
+        alt: 'ขวดปั๊มซันสกรีน NIRIN 50+ ทรงหัวกลมแบน สีเขียว ชมพู และฟ้าพาสเทล วางบนแท่นโทนเบจ',
+      },
+      {
+        name: 'Pump Bottle Set',
+        nameTh: 'ชุดขวดปั๊มหลายขนาด',
+        image: '/images/products/ขวดปั๊ม/LINE_ALBUM_ปั๊ม_260909_2.jpg',
+        alt: 'ชุดขวดปั๊ม 3 ขนาด โทนขาวครีมพร้อมฉลากแผ่นโปร่งแสง',
+      },
+      {
+        name: 'Body Lotion Pump',
+        nameTh: 'ขวดปั๊มโลชั่นบอดี้',
+        image: '/images/products/ขวดปั๊ม/LINE_ALBUM_ปั๊ม_260909_3.jpg',
+        alt: 'ขวดปั๊มโลชั่นบอดี้ทรงกระบอกสูง โทนพาสเทลพร้อมฉลากข้อความ body lotion',
+      },
+      {
+        name: 'Pump Dispenser',
+        nameTh: 'ที่ฉีดพ่นปั๊ม',
+        image: '/images/products/ขวดปั๊ม/LINE_ALBUM_ปั๊ม_260909_4.jpg',
+        alt: 'ที่ฉีดพ่นปั๊มทรงกลมสีขาว โปร่งแสงบางส่วน ใช้สำหรับสารทำความสะอาด',
+      },
+      {
+        name: 'Premium Pump Bottle',
+        nameTh: 'ขวดปั๊มพรีเมียม',
+        image: '/images/products/ขวดปั๊ม/LINE_ALBUM_ปั๊ม_260909_5.jpg',
+        alt: 'ขวดปั๊มหรูหราผิวขุ่นเทาอ่อน มีลายบางๆ วางบนแท่นโทนเขียว',
+      },
+      {
+        name: 'Pump Bottle 250ml',
+        nameTh: 'ขวดปั๊ม 250 มล.',
+        image: '/images/products/ขวดปั๊ม/LINE_ALBUM_ปั๊ม_260909_6.jpg',
+        alt: 'ขวดปั๊ม 250 มล. สไตล์มินีรัล โทนใสใจดวงตา เหมาะสำหรับน้ำมันบำรุงผิว',
       },
     ],
   },

@@ -1,0 +1,162 @@
+/* =====================================================================
+ * TEMPORARY SOCIAL ICONS PREVIEW — MOBILE ONLY (localhost test)
+ * Route: /social-icons-preview
+ * Rollback: ลบไฟล์นี้ + SocialIconsPreview.jsx + บรรทัด route ใน App.jsx
+ * ===================================================================== */
+
+.social-preview-page {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Floating social icons container */
+.social-float {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: var(--icon-gap, 12px);
+  /* Horizontal positioning */
+  right: 1rem;
+  left: auto;
+}
+
+.social-float--left {
+  left: 1rem;
+  right: auto;
+}
+
+/* Vertical positioning */
+.social-float--top {
+  top: var(--vertical-offset);
+  transform: none;
+}
+
+.social-float--center {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.social-float--bottom {
+  top: var(--vertical-offset);
+  transform: none;
+}
+
+/* Individual social icon */
+.social-icon {
+  width: var(--icon-size, 44px);
+  height: var(--icon-size, 44px);
+  border-radius: 50%;
+  background: #fffcfef7;
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  border: 1px solid #ffffffb8;
+  box-shadow: 0 0.4rem 1.2rem #3d1b5921;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3d1b59;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.social-icon:hover {
+  color: #ef5688;
+  box-shadow: 0.4rem 0.8rem 1.6rem #3d1b5930;
+}
+
+.social-icon:active {
+  transform: scale(0.95);
+  transition-duration: 0.08s;
+}
+
+/* Facebook brand color on hover */
+.social-icon[aria-label="Facebook"]:hover {
+  color: #1877f2;
+}
+
+/* TikTok brand color on hover */
+.social-icon[aria-label="TikTok"]:hover {
+  color: #000;
+}
+
+/* Preview controls panel */
+.social-preview-controls {
+  position: fixed;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #fffcfef7;
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  border: 1px solid #ffffffb8;
+  border-radius: 1rem;
+  box-shadow: 0 0.8rem 2rem #3d1b5928;
+  max-width: calc(100vw - 2rem);
+}
+
+.social-preview-toggle {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ef568840;
+  border-radius: 0.6rem;
+  background: #ef56880f;
+  color: #3d1b59;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.social-preview-toggle:hover {
+  background: #ef56881f;
+}
+
+.social-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: #3d1b59;
+}
+
+.social-preview-row span {
+  min-width: 3.5rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.social-preview-row button {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #e0d5f0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: #3d1b59;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.social-preview-row button.active {
+  background: #ef568814;
+  border-color: #ef568840;
+  color: #ef5688;
+  font-weight: 600;
+}
+
+.social-preview-row button:hover {
+  background: #ef56880f;
+}
+
+/* Hide on desktop — preview is mobile-only */
+@media (min-width: 761px) {
+  .social-float,
+  .social-preview-controls {
+    display: none;
+  }
+}

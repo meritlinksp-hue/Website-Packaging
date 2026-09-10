@@ -6,6 +6,7 @@ import OemProcessPage from './components/OemProcessPage';
 import ContactPage from './components/ContactPage';
 import ProductCatalog from './components/ProductCatalog';
 import Footer from './components/Footer';
+import MobileSocialDock from './components/MobileSocialDock';
 import './index.css';
 
 const ABOUT_HASH = '#/about-us';
@@ -132,6 +133,8 @@ function App() {
       <a className="skip-link" href="#about-us">
         ข้ามไปยังเนื้อหา
       </a>
+      {/* TEMPORARY MOBILE FLOATING SOCIAL DOCK (localhost only) — ROLLBACK: ลบบรรทัดนี้ */}
+      <MobileSocialDock />
       <h1 className="visually-hidden">Nirin Packaging</h1>
 
       <main className="showcase-page" id="home">

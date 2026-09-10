@@ -1,0 +1,130 @@
+/* =====================================================================
+ * MOBILE FLOATING SOCIAL DOCK — LOCALHOST ONLY (do not commit)
+ * Route-independent production-style dock: Facebook / TikTok / LINE
+ * - Mobile only (≤760px): fixed right, BELOW the floating header
+ * - Desktop (≥761px): hidden (component also returns null)
+ * Position derivation (mobile header metrics, index.css):
+ *   header top    = 1rem + env(safe-area-inset-top)
+ *   header height ≈ 3.55rem (brand/ph-center) + 0.65rem + 0.65rem padding
+ *                 + 2px border ≈ 4.85rem → rounded to 5rem for safety
+ *   header bottom ≈ 1rem + 5rem (+ safe-area) = 6rem
+ *   dock top      = 6rem + 0.75rem (12px gap, within required 8–16px)
+ * z-index 14: below header (20) + menu overlay (15) + open panel (30),
+ *   so the dock never covers logo/hamburger/menu.
+ * Logos: user artwork from /images/social-icons/ (44px, ~88–95% fill).
+ *   Logo IS the circle — transparent wrapper, no white button.
+ * Animations (subtle, long idle, reduced-motion safe):
+ *   Facebook — soft premium breathe · TikTok — short phone-like buzz
+ *   LINE — gentle communication pulse ring.
+ * ROLLBACK: delete this file + MobileSocialDock.jsx + 2 lines in App.jsx
+ * ===================================================================== */
+
+.msocial-dock {
+  position: fixed;
+  top: calc(1rem + env(safe-area-inset-top, 0px) + 5rem + 0.75rem);
+  right: calc(1rem + env(safe-area-inset-right, 0px));
+  z-index: 14;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Logo itself IS the circle — no white button, no backdrop */
+.msocial-link {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  box-shadow: 0 0.25rem 0.8rem #3d1b5926;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.msocial-link:hover {
+  box-shadow: 0 0.4rem 1rem #3d1b5933;
+}
+
+.msocial-link:active {
+  transform: scale(0.94);
+  transition-duration: 0.08s;
+}
+
+/* Full-bleed logos (~88–95% visual fill — artwork is edge-to-edge) */
+.msocial-logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* TikTok artwork: content is smaller inside padding → zoom in + clip circle */
+.msocial-link--tiktok {
+  overflow: hidden;
+}
+
+.msocial-link--tiktok .msocial-logo {
+  width: 125%;
+  height: 125%;
+  max-width: none;
+  border-radius: 0;
+}
+
+/* Facebook: subtle premium idle breathe (5s cycle, mostly still) */
+.msocial-link--fb .msocial-logo {
+  animation: msocial-fb-breathe 5s ease-in-out infinite;
+}
+
+@keyframes msocial-fb-breathe {
+  0%, 88%, 100% { transform: scale(1); }
+  94% { transform: scale(1.04); }
+}
+
+/* TikTok: short phone-vibration burst (4.2s cycle, ~0.35s buzz) */
+.msocial-link--tiktok .msocial-logo {
+  animation: msocial-tiktok-buzz 4.2s linear infinite;
+}
+
+@keyframes msocial-tiktok-buzz {
+  0%, 91.5%, 100% { transform: translateX(0) rotate(0deg); }
+  92.5% { transform: translateX(-1px) rotate(-2deg); }
+  94% { transform: translateX(1px) rotate(2deg); }
+  95.5% { transform: translateX(-0.7px) rotate(-1.5deg); }
+  97% { transform: translateX(0.5px) rotate(1.5deg); }
+  98.5% { transform: translateX(0) rotate(0deg); }
+}
+
+/* LINE: subtle communication pulse (3.2s cycle — scale + tiny lift) */
+.msocial-link--line .msocial-logo {
+  animation: msocial-line-pulse 3.2s ease-in-out infinite;
+}
+
+@keyframes msocial-line-pulse {
+  0%, 86%, 100% { transform: scale(1) translateY(0); }
+  92% { transform: scale(1.04) translateY(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .msocial-link--fb .msocial-logo,
+  .msocial-link--tiktok .msocial-logo,
+  .msocial-link--line .msocial-logo {
+    animation: none;
+  }
+}
+
+/* Desktop (≥761px): never show */
+@media (min-width: 761px) {
+  .msocial-dock {
+    display: none;
+  }
+}
