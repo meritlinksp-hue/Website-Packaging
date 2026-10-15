@@ -1,0 +1,14 @@
+# Nirin Packaging — robots.txt
+# อนุญาตให้เสิร์ชเอนจิน crawl เว็บไซต์สาธารณะทั้งหมด (หน้าแรก, assets, images,
+# หน้าสินค้า ฯลฯ) — ไม่มีการบล็อกพาธที่เป็นเนื้อหาจริงของเว็บไซต์
+
+User-agent: *
+Allow: /
+
+# หน้าต้นแบบสำหรับช่วงพัฒนาอย่างเดียว (ไม่ใช่เนื้อหาจริงของเว็บไซต์)
+Disallow: /animation-preview
+Disallow: /social-icons-preview
+Disallow: /interaction-lab
+Disallow: /live-chat-preview
+
+Sitemap: https://www.nirinpackaging.com/sitemap.xml

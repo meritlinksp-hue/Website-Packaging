@@ -10,14 +10,23 @@ const REFERENCES = [
   {
     src: '/images/about/about-reference-2.png',
     alt: 'ภาพที่ 1 — About Us: เราคือพาร์ทเนอร์ที่เติบโตไปกับแบรนด์ของคุณ และพันธกิจของเรา',
+    width: 1980,
+    height: 1200,
+    loading: 'eager', // ภาพแรกสุด = LCP ของหน้า About — โหลดทันทีเหมือนเดิม
   },
   {
     src: '/images/about/about-reference-1.png',
     alt: 'ภาพที่ 2 — วิสัยทัศน์ (VISION) พันธกิจ (MISSION) และค่านิยมองค์กร (CORE VALUES) ของ Nirin Packaging',
+    width: 1980,
+    height: 1200,
+    loading: 'lazy',
   },
   {
     src: '/images/about/about-reference-3.png',
     alt: 'ภาพที่ 3 — Who We Are: NIRIN PACKAGING — Packaging That Builds Stronger Brands',
+    width: 1980,
+    height: 1200,
+    loading: 'lazy',
   },
 ];
 
@@ -30,6 +39,10 @@ export default function AboutPage() {
           className="about-reference"
           src={image.src}
           alt={image.alt}
+          width={image.width}
+          height={image.height}
+          loading={image.loading}
+          decoding="async"
         />
       ))}
     </div>

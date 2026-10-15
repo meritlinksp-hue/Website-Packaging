@@ -7,3 +7,39 @@
   base = "dev"
   command = "npm run build"
   publish = "dist"
+
+# ------------------------------------------------------------------
+# SEO: clean URLs — https://www.nirinpackaging.com/product-catalog ฯลฯ
+# status 200 = rewrite (serve index.html เดิม โดย URL คงเป็น clean path
+# ไม่มีการ redirect) เพื่อให้ Google ตามลิงก์จาก sitemap.xml ได้
+#
+# ปลอดภัยเพราะ:
+# - rewrite แบบไม่มี force จะ "ไม่ทับไฟล์ที่มีอยู่จริง" → assets/, images/,
+#   robots.txt, sitemap.xml ยังถูกเสิร์ฟเป็นไฟล์ปกติ (ไม่มี redirect loop)
+# - เป็นเฉพาะพาธของหน้าเว็บจริง 5 หน้าเท่านั้น ไม่แตะโดเมน (www/apex)
+#   ซึ่งยังจัดการผ่านการตั้งค่า Domain management ของ Netlify เดิม
+# ------------------------------------------------------------------
+[[redirects]]
+  from = "/about-us"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/product-catalog"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/product-catalog/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/oem-process"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact-us"
+  to = "/index.html"
+  status = 200

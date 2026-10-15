@@ -8,6 +8,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { catalogHero, catalogCategories } from '../data/products';
+import { setJsonLd, removeJsonLd, SITE_URL } from '../services/seo';
 
 /* =====================================================================
  * ลำดับหมวดหมู่ที่ใช้แสดงผลในหน้า Product Catalog
@@ -90,7 +91,6 @@ function ProductCard({ product, onPreview }) {
         </button>
       </div>
       <figcaption className="catalog-card-label">
-        <span className="catalog-card-th">{product.nameTh}</span>
         <span className="catalog-card-en">{product.name}</span>
       </figcaption>
     </figure>
@@ -248,6 +248,51 @@ export default function ProductCatalog() {
 
   const closePreview = () => setPreview(null);
 
+  /* ===================================================================
+   * SEO: Product structured data (JSON-LD) ของหน้า Product Catalog
+   * - ใช้เฉพาะข้อมูลจริงจาก products.js: ชื่อ, คำอธิบาย (alt), รูป, หมวดหมู่
+   * - ไม่ใส่ price / availability / ratings / sku (ไม่มีข้อมูลจริง → ไม่เดา)
+   * - ลบออกเมื่อออกจากหน้า เพื่อไม่ให้ schema ตกค้างไปหน้าอื่น
+   * =================================================================== */
+  useEffect(() => {
+    const toAbsoluteUrl = (path) => {
+      const url = `${SITE_URL}${path}`;
+      // encode ครั้งเดียว (ข้ามถ้า path encode %xx มาแล้ว เช่น New%20Hero)
+      return url.includes('%') ? url : encodeURI(url);
+    };
+
+    let position = 0;
+    const itemListElement = [];
+
+    orderedCatalogCategories.forEach((category) => {
+      category.products.forEach((product) => {
+        position += 1;
+        itemListElement.push({
+          '@type': 'ListItem',
+          position,
+          item: {
+            '@type': 'Product',
+            name: product.nameTh || product.name,
+            description: product.alt,
+            image: toAbsoluteUrl(product.image),
+            category: category.th,
+            brand: { '@type': 'Brand', name: 'Nirin Packaging' },
+          },
+        });
+      });
+    });
+
+    setJsonLd('catalog-products', {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'รวมบรรจุภัณฑ์เครื่องสำอาง Nirin Packaging',
+      numberOfItems: itemListElement.length,
+      itemListElement,
+    });
+
+    return () => removeJsonLd('catalog-products');
+  }, []);
+
   return (
     <div className="catalog-page">
       {/* Hero — ภาพหมวดหมู่สินค้าที่แนบมาสำหรับด้านบนสุดของหน้า */}
@@ -258,7 +303,7 @@ export default function ProductCatalog() {
             alt={catalogHero.alt}
             width={catalogHero.width}
             height={catalogHero.height}
-            fetchpriority="high"
+            fetchPriority="high"
             decoding="async"
           />
         </figure>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Packaging Mobile Header Simulation (Preview — ไม่กระทบเว็บไซต์จริง)</title>
+<!-- ฟอนต์ชุดเดียวกับเว็บไซต์จริง (dev/index.html) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Design tokens คัดลอกจาก dev/src/index.css (เว็บไซต์จริง) */
+    --ink: #2f1750;
+    --purple: #6738a2;
+    --pink: #ef5688;
+    --line: #6738a229;
+    --paper: #fbf8fb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    font-family: "IBM Plex Sans Thai", "Outfit", ui-sans-serif, system-ui, sans-serif;
+    background: linear-gradient(160deg, #ece4f2 0%, #f6eef5 55%, #f8ecf1 100%);
+    color: var(--ink);
+    display: flex; flex-direction: column; align-items: center;
+    gap: 1.6rem; padding: 2.4rem 1rem 3rem;
+  }
+  .page-note { text-align: center; font-size: .82rem; color: #6b5a7a; max-width: 36rem; line-height: 1.65; }
+  .page-note strong { color: var(--purple); }
+  .stage { display: flex; align-items: stretch; gap: 1.8rem; flex-wrap: wrap; justify-content: center; }
+  /* ===== Phone frame ===== */
+  .phone {
+    width: 390px; height: 760px; flex: none;
+    background: #141118; border-radius: 54px; padding: 10px;
+    box-shadow: 0 2.2rem 5rem #3d1b5940, 0 .4rem 1.2rem #3d1b5925;
+    position: relative;
+  }
+  .screen {
+    width: 100%; height: 100%; border-radius: 44px; overflow: hidden;
+    background: var(--paper); position: relative;
+    box-shadow: inset 0 0 0 1px #ffffff2b;
+  }
+  .statusbar {
+    height: 44px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.6rem 0 2.1rem; font-size: .82rem; font-weight: 600; color: var(--ink);
+    font-family: "Outfit", ui-sans-serif, sans-serif;
+  }
+  .statusbar .icons { letter-spacing: .18em; font-size: .72rem; }
+  .notch {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 26px; background: #141118; border-radius: 20px; z-index: 60;
+  }
+
+  /* ===== จำลอง Header มือถือ — ค่า CSS ตรงตาม dev/src/index.css (≤760px) ===== */
+  .floating-header {
+    z-index: 20;
+    backdrop-filter: blur(18px) saturate(135%);
+    -webkit-backdrop-filter: blur(18px) saturate(135%);
+    background: #fffcfed6;
+    border: 1px solid #ffffffb8;
+    border-radius: 1.25rem;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    width: calc(100% - 2rem);            /* min(74rem, 100% - 2rem) บนจอมือถือ */
+    padding: 0.65rem 0.8rem 0.65rem 1rem;
+    display: flex;
+    position: absolute;
+    top: 1rem; left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0.8rem 2.8rem #3d1b5921;
+  }
+  .brand { flex: none; width: 5.4rem; height: 3.55rem; display: block; }
+  .brand img { object-fit: contain; width: 100%; height: 100%; display: block; }
+  .nav-toggle {
+    border: 1px solid var(--line); border-radius: 0.85rem; background: #fff;
+    width: 2.7rem; height: 2.7rem; flex: none;
+    align-items: center; justify-content: center; gap: 0.3rem;
+    flex-direction: column; display: flex; cursor: pointer;
+  }
+  .nav-toggle span { width: 1.15rem; height: 2px; background: var(--ink); border-radius: 2px; display: block; }
+
+  /* ===== แถบสินค้าบรรจุภัณฑ์ (โซนแสดงภาพที่ normalize แล้ว) ===== */
+  .strip-zone { position: absolute; top: 6.4rem; left: 0; right: 0; padding: 0 0.4rem; }
+  .strip {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: 14px; height: 200px;
+  }
+  .slot { position: relative; width: 46px; height: 168px; }
+  .slot .product {
+    position: absolute; bottom: 0; left: 50%;
+    transform-origin: 50% 100%;
+    transform: translateX(-50%) translateY(var(--y0)) rotate(var(--r0)) scale(.55);
+    opacity: 0; will-change: transform, opacity;
+  }
+  .slot .ground {
+    position: absolute; bottom: -7px; left: 50%;
+    width: 150%; height: 9px; border-radius: 50%;
+    background: radial-gradient(closest-side, #3d1b5930, transparent 78%);
+    opacity: 0; transform: translateX(-50%) scaleX(.5);
+  }
+  .slot .tag {
+    position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%);
+    font-size: .6rem; color: #9c8bb0; font-weight: 600;
+    font-family: "Outfit", ui-sans-serif, sans-serif;
+  }
+
+  .controls { display: flex; flex-direction: column; gap: .9rem; justify-content: center; min-width: 16rem; }
+  .replay {
+    font-family: "Outfit", ui-sans-serif, sans-serif; cursor: pointer;
+    border: 1px solid var(--line); border-radius: .85rem; background: #fff;
+    color: var(--ink); font-size: .85rem; font-weight: 600;
+    padding: .75rem 1.1rem; letter-spacing: .06em;
+    transition: background-color .18s, transform .18s;
+  }
+  .replay:hover { background: #ef56880f; }
+  .replay:active { transform: translateY(1px); }
+  .note-card {
+    background: #ffffffb8; border: 1px solid #ffffffb8; border-radius: 1.1rem;
+    padding: 1rem 1.15rem; font-size: .78rem; line-height: 1.7; color: #5b4a68;
+    box-shadow: 0 .6rem 2rem #3d1b5912;
+  }
+  .note-card h3 { font-size: .8rem; color: var(--purple); margin-bottom: .4rem; }
+  .note-card code { background: #6738a214; border-radius: .3rem; padding: .05rem .3rem; font-size: .72rem; }
+  .status-dot { display: inline-block; width: .5rem; height: .5rem; border-radius: 50%; background: #37b26c; margin-right: .35rem; }
+
+</head>
+<body>
+  <p class="page-note">
+    <strong>หน้า Preview แยกต่างหาก</strong> — จำลอง Mobile Header (≤760px) ของเว็บไซต์จริง<br>
+    ไฟล์นี้เป็นเครื่องมือดูตัวอย่างเท่านั้น ไม่เชื่อมกับ <code>dev/src</code> และไม่ถูก build ลงเว็บไซต์
+  </p>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen">
+        <div class="statusbar"><span>9:41</span><span class="icons">●●●●○ ⌁ ▮</span></div>
+        <div class="notch"></div>
+
+        <!-- สำเนา Header มือถือตามเว็บไซต์จริง (โครงสร้างเดียวกับ dev/src/components/Header.jsx) -->
+        <header class="floating-header" aria-label="เมนูหลัก">
+          <a class="brand" href="#" aria-label="Nirin Packaging หน้าแรก">
+            <img src="../dev/public/images/nirin-logo.avif" alt="Nirin Packaging">
+          </a>
+          <button type="button" class="nav-toggle" aria-label="เปิดเมนู">
+            <span></span><span></span><span></span>
+          </button>
+        </header>
+
+        <!-- ภาพ Packaging ที่ผ่านการ normalize → dev/public/images/packaging/animation/ -->
+        <div class="strip-zone">
+          <div class="strip" id="strip">
+            <div class="slot" style="--y0:88px;  --r0:-6deg; width:50px">
+              <img class="product" src="../dev/public/images/packaging/animation/1.png" alt="Packaging 1" style="width:50px">
+              <div class="ground"></div><div class="tag">1</div>
+            </div>
+            <div class="slot" style="--y0:96px; --r0:5deg; width:51px">
+              <img class="product" src="../dev/public/images/packaging/animation/2.png" alt="Packaging 2" style="width:51px">
+              <div class="ground"></div><div class="tag">2</div>
+            </div>
+            <div class="slot" style="--y0:80px; --r0:-5deg; width:80px; height:120px">
+              <img class="product" src="../dev/public/images/packaging/animation/3.png" alt="Packaging 3" style="width:80px">
+              <div class="ground"></div><div class="tag">3</div>
+            </div>
+            <div class="slot" style="--y0:104px; --r0:7deg; width:38px">
+              <img class="product" src="../dev/public/images/packaging/animation/4.png" alt="Packaging 4" style="width:38px">
+              <div class="ground"></div><div class="tag">4</div>
+            </div>
+            <div class="slot" style="--y0:92px; --r0:-6deg; width:47px">
+              <img class="product" src="../dev/public/images/packaging/animation/5.png" alt="Packaging 5" style="width:47px">
+              <div class="ground"></div><div class="tag">5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="replay" id="replay" type="button">▶ เล่นอีกครั้ง (Replay)</button>
+      <div class="note-card">
+        <h3><span class="status-dot"></span>Animation spec</h3>
+        Damped-spring physics ต่อชิ้น (stiffness 150–186, ζ 0.44–0.52)<br>
+        • เข้ามาทีละชิ้น — stagger 170ms<br>
+        • acceleration → deceleration ตามกฎสปริง<br>
+        • overshoot ~12–18% + wobble 2 จังหวะเบา ๆ<br>
+        • เอียงเริ่มต้น ±5–7° สลับทิศ แล้วหมุนกลับตั้ง<br>
+        • เงาใต้ชิ้นงานที่ขยายตามจังหวะลงพื้น (มีน้ำหนัก)<br>
+        • เล่นครั้งเดียว จบแล้วหยุดนิ่ง ไม่ loop
+      </div>
+      <div class="note-card">
+        <h3><span class="status-dot"></span>Assets &amp; normalization</h3>
+        ภาพใหม่: <code>packaging/animation/1–5.png</code><br>
+        ต้นฉบับ: <code>packaging/originals/</code> — ไม่ถูกแก้ไข (ตรวจด้วย MD5)<br>
+        Crop ตามวัตถุจริง (alpha≥16) แล้วสเกลให้ <code>sqrt(area)=180</code>
+        เท่ากันทุกชิ้น ด้วย LANCZOS (รักษาสัดส่วน ไม่บิดภาพ)<br>
+        Header sim ใช้ค่า CSS ตรงกับ <code>dev/src/index.css</code> และ
+        ฟอนต์ IBM Plex Sans Thai + Outfit เหมือนเว็บจริง
+      </div>
+    </div>
+  </div>
+<script>
+(function () {
+  "use strict";
+  var products = Array.prototype.slice.call(document.querySelectorAll(".product"));
+  var grounds  = Array.prototype.slice.call(document.querySelectorAll(".ground"));
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* สเปริงต่อชิ้น: stiffness/ζ/ระยะ/มุมเอียงต่างกันเล็กน้อย → เป็นธรรมชาติ ไม่ซ้ำจังหวะ */
+  var ITEMS = products.map(function (el, i) {
+    var slot = el.closest(".slot");
+    var y0 = parseFloat(getComputedStyle(slot).getPropertyValue("--y0")) || 90;
+    var r0 = parseFloat(getComputedStyle(slot).getPropertyValue("--r0")) || -6;
+    return {
+      el: el, ground: grounds[i], y0: y0, r0: r0,
+      k: 150 + (i * 37 % 5) * 9,          // 150–186
+      zeta: 0.44 + (i * 29 % 5) * 0.02,   // 0.44–0.52 (underdamped → overshoot + wobble)
+      delay: i * 170,                      // เข้ามาทีละชิ้น
+      y: y0, vy: 0, r: r0, vr: 0,
+      started: false, done: false
+    };
+  });
+
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+
+  function apply(s) {
+    var g = clamp(1 - s.y / s.y0, 0, 1);
+    s.el.style.transform =
+      "translateX(-50%) translateY(" + s.y.toFixed(2) + "px)" +
+      " rotate(" + s.r.toFixed(2) + "deg)" +
+      " scale(" + clamp(1 - 0.45 * (s.y / s.y0), 0.55, 1.1).toFixed(3) + ")";
+    s.el.style.opacity = clamp(g * 1.6, 0, 1).toFixed(3);
+    s.ground.style.opacity = (g * 0.2).toFixed(3);
+    s.ground.style.transform = "translateX(-50%) scaleX(" + (0.5 + 0.5 * g).toFixed(3) + ")";
+  }
+
+  function settle(s) {   // จบแล้วหยุดนิ่งที่ตำแหน่งสุดท้าย — ไม่ขยับอีก
+    s.y = 0; s.vy = 0; s.r = 0; s.vr = 0; s.done = true;
+    s.el.style.transform = "translateX(-50%)";
+    s.el.style.opacity = "1";
+    s.ground.style.opacity = "0.2";
+    s.ground.style.transform = "translateX(-50%) scaleX(1)";
+  }
+
+  var raf = null, t0 = 0, last = 0;
+
+  function frame(now) {
+    if (!t0) { t0 = now; last = now; }
+    var dt = clamp(now - last, 0, 34) / 1000;
+    last = now;
+    var elapsed = now - t0, allDone = true;
+
+    ITEMS.forEach(function (s) {
+      if (s.done) return;
+      if (elapsed < s.delay) { allDone = false; return; }
+      if (!s.started) { s.started = true; }
+      var c = 2 * Math.sqrt(s.k) * s.zeta;
+      /* semi-implicit Euler 2 substeps → เสถียร แม้แท็บทำงานช้า */
+      for (var n = 0; n < 2; n++) {
+        var h = dt / 2;
+        s.vy += (-s.k * s.y - c * s.vy) * h;              // แรงสปริง → accel/decel
+        s.y += s.vy * h;
+        s.vr += (-(s.k * 0.55) * s.r - (c * 0.8) * s.vr) * h;  // สปริงหมุน (แกว่งเอียง)
+        s.r += s.vr * h;
+      }
+      apply(s);
+      if (Math.abs(s.y) < 0.15 && Math.abs(s.vy) < 2 && Math.abs(s.r) < 0.05 && Math.abs(s.vr) < 1) {
+        settle(s);
+      } else {
+        allDone = false;
+      }
+    });
+
+    if (!allDone) { raf = requestAnimationFrame(frame); }
+    else { raf = null; }  /* เล่นครั้งเดียว — ยกเลิก rAF, ทุกชิ้นหยุดนิ่ง ไม่ loop */
+  }
+
+  function reset() {
+    ITEMS.forEach(function (s) {
+      s.y = s.y0; s.vy = 0; s.r = s.r0; s.vr = 0;
+      s.started = false; s.done = false;
+      apply(s);
+      s.el.style.opacity = "0";
+      s.ground.style.opacity = "0";
+    });
+  }
+
+  function play() {
+    if (raf) cancelAnimationFrame(raf);
+    t0 = 0; last = 0;
+    if (reduce) {   /* เคารพ reduce motion — แสดงสถานะสุดท้ายทันที */
+      ITEMS.forEach(settle);
+      return;
+    }
+    reset();
+    raf = requestAnimationFrame(frame);
+  }
+
+  document.getElementById("replay").addEventListener("click", play);
+
+  /* เล่นครั้งเดียวอัตโนมัติเมื่อเปิดหน้า — รอให้ภาพโหลดครบก่อน ไม่ให้กระตุก */
+  var pending = products.length;
+  products.forEach(function (img) {
+    if (img.complete) { pending--; return; }
+    img.addEventListener("load",  function () { if (--pending <= 0) play(); });
+    img.addEventListener("error", function () { if (--pending <= 0) play(); });
+  });
+  if (pending <= 0) play();
+})();
+</script>
+
+
+</body>
+</html>
